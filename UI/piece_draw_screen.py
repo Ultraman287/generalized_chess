@@ -1,51 +1,12 @@
 import pygame
 import numpy as np
 from dataclasses import dataclass
+import os
 
+from Helpers.interactive_box import InteractiveBox
 
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
-
-
-class InteractiveBox:
-    def __init__(
-        self,
-        rect: pygame.Rect,
-        text: str,
-        text_color: tuple,
-        function=None,
-    ):
-        """Class for creating interactive boxes"""
-        self.rect = rect
-        self.text = text
-        self.text_color = text_color
-        self.function = function
-        self.active = False
-        self.color_active = (250, 220, 220)
-        self.color_inactive = BOX_COLOR
-
-    def draw(self, screen):
-        """Draws the interactive box on the screen"""
-        color = self.color_active if self.active else self.color_inactive
-        pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
-        font = pygame.font.Font(None, 32)
-        text = font.render(self.text, 1, self.text_color)
-        screen.blit(text, (self.rect.left + 5, self.rect.top + 5))
-
-    def update(self, screen):
-        """Updates the interactive box"""
-        color = self.color_active if self.active else self.color_inactive
-        pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
-        font = pygame.font.Font(None, 32)
-        text = font.render(self.text, 1, self.text_color)
-        screen.blit(text, (self.rect.left + 5, self.rect.top + 5))
-
-
-box_back = InteractiveBox(pygame.Rect(73, 354, 186, 65), "Back", (0, 0, 0))
-box_save = InteractiveBox(pygame.Rect(73, 473, 186, 65), "Save", (0, 0, 0))
-box_input = InteractiveBox(pygame.Rect(331, 116, 420, 420), "", (0, 0, 0))
 
 
 class BoxName(InteractiveBox):
@@ -216,6 +177,30 @@ movement_matrix[7, 7] = 60
 box_input_2 = BoxInput(movement_matrix)  # This is the default movement matrix
 
 
+class BoxSave(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(73, 473, 186, 65)
+        self.text = "Save"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event, function=None):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = True
+                if function is not None:
+                    function()
+        else:
+            self.active = False
+
+
+box_save = BoxSave()
+
+box_back = InteractiveBox(pygame.Rect(73, 354, 186, 65), "Back", (0, 0, 0))
+
+
 class MakePiece:
     def __init__(
         self,
@@ -259,6 +244,7 @@ class MakePiece:
         else:
             self.box_input_2.handle_event(event)
             self.movement = self.box_input_2.current_mesh
+        self.box_save.handle_event(event, self.save)
 
     def update(self, screen):
         """Updates the make piece window"""
@@ -271,3 +257,12 @@ class MakePiece:
             self.box_input.update(screen)
         else:
             self.box_input_2.update(screen)
+
+    def save(self):
+        """Saves the piece to the pieces folder"""
+
+        folder = os.path.join(os.getcwd(), "Pieces")
+
+        file_name = os.path.join(folder, self.box_name.text + ".npz")
+
+        np.savez(file_name, drawing=self.drawing, movement=self.movement)
