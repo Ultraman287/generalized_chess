@@ -174,7 +174,7 @@ box_input = BoxInput()
 movement_matrix = (np.indices((15, 15)).sum(axis=0) % 2) * 255
 movement_matrix[7, 7] = 60
 
-box_input_2 = BoxInput(movement_matrix)  # This is the default movement matrix
+box_input_2 = BoxInput(movement_matrix.copy())  # This is the default movement matrix
 
 
 class BoxSave(InteractiveBox):
@@ -220,8 +220,8 @@ box_back = BoxBack()
 class MakePiece:
     def __init__(
         self,
-        rows: int,
-        cols: int,
+        rows: int = 8,
+        cols: int = 8,
         movement: np.ndarray = np.zeros((15, 15)),
         drawing: np.ndarray = np.zeros((64, 64)),
     ):
@@ -275,6 +275,15 @@ class MakePiece:
             self.box_input.update(screen)
         else:
             self.box_input_2.update(screen)
+
+    def reset(self):
+        self.box_name.text = "Enter Name"
+        self.movement = movement_matrix.copy()
+        self.drawing = np.zeros((64, 64))
+        self.box_input.current_mesh = self.drawing
+        self.box_input_2.current_mesh = self.movement
+        self.box_draw_and_move.active_draw = True
+        self.box_name.active = False
 
     def save(self):
         """Saves the piece to the pieces folder"""

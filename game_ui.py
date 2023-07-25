@@ -17,12 +17,8 @@ screen.fill(BACKGROUND_COLOR)
 pygame.init()
 thorpy.init(screen, thorpy.theme_classic)  # bind screen to gui elements and set theme
 
-
 windows = {
-    "piece_draw_screen": MakePiece(
-        8,
-        8,
-    ),
+    "piece_draw_screen": MakePiece(),
     "piece_select_screen": PieceSelectScreen(),
     "piece_existing_screen": PieceExistingScreen(),
 }
@@ -36,6 +32,7 @@ while running:
         if next_window:
             CURRENT_WINDOW = next_window
             screen.fill(BACKGROUND_COLOR)
+            windows[CURRENT_WINDOW].reset()
     windows[CURRENT_WINDOW].update(screen)
 
     pygame.display.flip()

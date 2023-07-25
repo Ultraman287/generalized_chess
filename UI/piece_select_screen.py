@@ -50,6 +50,9 @@ class PieceSelectScreen:
             event
         ) or self.edit_piece_button.handle_event(event)
 
+    def reset(self):
+        pass
+
     def update(self, screen):
         screen.fill((198, 198, 198))
         self.new_piece_button.draw(screen)
