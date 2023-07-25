@@ -30,9 +30,14 @@ while running:
             running = False
         next_window = windows[CURRENT_WINDOW].handle_event(event)
         if next_window:
-            CURRENT_WINDOW = next_window
-            screen.fill(BACKGROUND_COLOR)
-            windows[CURRENT_WINDOW].reset()
+            if type(next_window) == tuple:
+                CURRENT_WINDOW = next_window[0]
+                screen.fill(BACKGROUND_COLOR)
+                windows[CURRENT_WINDOW].reset(next_window[1])
+            else:
+                CURRENT_WINDOW = next_window
+                screen.fill(BACKGROUND_COLOR)
+                windows[CURRENT_WINDOW].reset()
     windows[CURRENT_WINDOW].update(screen)
 
     pygame.display.flip()

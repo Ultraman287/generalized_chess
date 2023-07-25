@@ -99,7 +99,7 @@ class SelectPiece(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             for piece in self.pieces:
                 if piece.handle_event(event) == "piece_draw_screen":
-                    return "piece_draw_screen"
+                    return "piece_draw_screen", piece.name
 
     def update(self, screen):
         self.draw(screen)

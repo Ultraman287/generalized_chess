@@ -207,11 +207,12 @@ class BoxBack(InteractiveBox):
         self.active = False
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
+        self.previous_window = "piece_select_screen"
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                return "piece_select_screen"
+                return self.previous_window
 
 
 box_back = BoxBack()
@@ -276,14 +277,29 @@ class MakePiece:
         else:
             self.box_input_2.update(screen)
 
-    def reset(self):
-        self.box_name.text = "Enter Name"
-        self.movement = movement_matrix.copy()
-        self.drawing = np.zeros((64, 64))
-        self.box_input.current_mesh = self.drawing
-        self.box_input_2.current_mesh = self.movement
-        self.box_draw_and_move.active_draw = True
-        self.box_name.active = False
+    def reset(self, name: str = None):
+        if name is not None:
+            self.box_name.text = name
+            self.box_name.active = False
+            self.movement = np.load(os.path.join(os.getcwd(), "Pieces", name + ".npz"))[
+                "movement"
+            ]
+            self.drawing = np.load(os.path.join(os.getcwd(), "Pieces", name + ".npz"))[
+                "drawing"
+            ]
+            self.box_input.current_mesh = self.drawing
+            self.box_input_2.current_mesh = self.movement
+            self.box_draw_and_move.active_draw = True
+            self.box_back.previous_window = "piece_existing_screen"
+        else:
+            self.box_name.text = "Enter Name"
+            self.movement = movement_matrix.copy()
+            self.drawing = np.zeros((64, 64))
+            self.box_input.current_mesh = self.drawing
+            self.box_input_2.current_mesh = self.movement
+            self.box_draw_and_move.active_draw = True
+            self.box_name.active = False
+            self.box_back.previous_window = "piece_select_screen"
 
     def save(self):
         """Saves the piece to the pieces folder"""
