@@ -1,6 +1,9 @@
 import pygame
+import thorpy
 from UI.piece_draw_screen import MakePiece
 from UI.piece_select_screen import PieceSelectScreen
+from UI.piece_existing_screen import PieceExistingScreen
+
 
 global CURRENT_WINDOW
 WIDTH, HEIGHT = 800, 600
@@ -12,6 +15,7 @@ running = True
 clock = pygame.time.Clock()
 screen.fill(BACKGROUND_COLOR)
 pygame.init()
+thorpy.init(screen, thorpy.theme_classic)  # bind screen to gui elements and set theme
 
 
 windows = {
@@ -20,6 +24,7 @@ windows = {
         8,
     ),
     "piece_select_screen": PieceSelectScreen(),
+    "piece_existing_screen": PieceExistingScreen(),
 }
 
 while running:

@@ -198,7 +198,23 @@ class BoxSave(InteractiveBox):
 
 box_save = BoxSave()
 
-box_back = InteractiveBox(pygame.Rect(73, 354, 186, 65), "Back", (0, 0, 0))
+
+class BoxBack(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(73, 354, 186, 65)
+        self.text = "Back"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                return "piece_select_screen"
+
+
+box_back = BoxBack()
 
 
 class MakePiece:
@@ -245,6 +261,8 @@ class MakePiece:
             self.box_input_2.handle_event(event)
             self.movement = self.box_input_2.current_mesh
         self.box_save.handle_event(event, self.save)
+
+        return self.box_back.handle_event(event)
 
     def update(self, screen):
         """Updates the make piece window"""
