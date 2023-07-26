@@ -11,7 +11,7 @@ BOX_COLOR = (217, 217, 217)
 
 class BoxName(InteractiveBox):
     def __init__(self):
-        self.rect = pygame.Rect(240, 43, 320, 50)
+        self.rect = pygame.Rect(381, 43, 320, 50)
         self.text = "Enter Name"
         self.text_color = (0, 0, 0)
         self.active = False
@@ -41,8 +41,8 @@ box_name = BoxName()
 
 class BoxDrawandMove(InteractiveBox):
     def __init__(self):
-        self.rect_draw = pygame.Rect(73, 116, 186, 65)
-        self.rect_move = pygame.Rect(73, 235, 186, 65)
+        self.rect_draw = pygame.Rect(73, 184, 186, 65)
+        self.rect_move = pygame.Rect(73, 280, 186, 65)
         self.text_draw = "Draw"
         self.text_move = "Move"
         self.text_color = (0, 0, 0)
@@ -179,7 +179,7 @@ box_input_2 = BoxInput(movement_matrix.copy())  # This is the default movement m
 
 class BoxSave(InteractiveBox):
     def __init__(self):
-        self.rect = pygame.Rect(73, 473, 186, 65)
+        self.rect = pygame.Rect(73, 470, 186, 65)
         self.text = "Save"
         self.text_color = (0, 0, 0)
         self.active = False
@@ -201,7 +201,7 @@ box_save = BoxSave()
 
 class BoxBack(InteractiveBox):
     def __init__(self):
-        self.rect = pygame.Rect(73, 354, 186, 65)
+        self.rect = pygame.Rect(73, 375, 186, 65)
         self.text = "Back"
         self.text_color = (0, 0, 0)
         self.active = False
@@ -216,6 +216,30 @@ class BoxBack(InteractiveBox):
 
 
 box_back = BoxBack()
+
+
+class BoxDelete(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(73, 93, 186, 65)
+        self.text = "Delete"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = (225, 157, 157)
+        self.previous_window = "piece_select_screen"
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                if os.path.exists(
+                    os.path.join(os.getcwd(), "Pieces", box_name.text + ".npz")
+                ):
+                    os.remove(
+                        os.path.join(os.getcwd(), "Pieces", box_name.text + ".npz")
+                    )
+
+
+box_delete = BoxDelete()
 
 
 class MakePiece:
@@ -237,6 +261,7 @@ class MakePiece:
         self.box_save = box_save
         self.box_input = box_input
         self.box_input_2 = box_input_2
+        self.box_delete = box_delete
 
     def draw(self, screen):
         """Draws the make piece window"""
@@ -249,6 +274,7 @@ class MakePiece:
             self.box_input.draw(screen)
         else:
             self.box_input_2.draw(screen)
+        self.box_delete.draw(screen)
 
     def handle_event(self, event):
         """Handles events for the make piece window"""
@@ -262,6 +288,7 @@ class MakePiece:
             self.box_input_2.handle_event(event)
             self.movement = self.box_input_2.current_mesh
         self.box_save.handle_event(event, self.save)
+        self.box_delete.handle_event(event)
 
         return self.box_back.handle_event(event)
 
@@ -276,6 +303,7 @@ class MakePiece:
             self.box_input.update(screen)
         else:
             self.box_input_2.update(screen)
+        self.box_delete.update(screen)
 
     def reset(self, name: str = None):
         if name is not None:

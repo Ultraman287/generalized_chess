@@ -1,0 +1,2 @@
+class BoardOptionsScreen:
+    pass

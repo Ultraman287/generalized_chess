@@ -1,15 +1,19 @@
 import pygame
 import thorpy
+from UI.main_menu_screen import MainMenuScreen
 from UI.piece_draw_screen import MakePiece
 from UI.piece_select_screen import PieceSelectScreen
 from UI.piece_existing_screen import PieceExistingScreen
+from UI.board_options_screen import BoardOptionsScreen
+from UI.board_existing_screen import BoardExistingScreen
+from UI.board_create_screen import BoardCreateScreen
 
 
 global CURRENT_WINDOW
 WIDTH, HEIGHT = 800, 600
 BACKGROUND_COLOR = (198, 198, 198)
 
-CURRENT_WINDOW = "piece_select_screen"
+CURRENT_WINDOW = "main_menu_screen"
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 running = True
 clock = pygame.time.Clock()
@@ -18,6 +22,7 @@ pygame.init()
 thorpy.init(screen, thorpy.theme_classic)  # bind screen to gui elements and set theme
 
 windows = {
+    "main_menu_screen": MainMenuScreen(),
     "piece_draw_screen": MakePiece(),
     "piece_select_screen": PieceSelectScreen(),
     "piece_existing_screen": PieceExistingScreen(),
