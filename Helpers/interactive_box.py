@@ -29,7 +29,7 @@ class InteractiveBox:
         """Draws the interactive box on the screen"""
         color = self.color_active if self.active else self.color_inactive
         pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
+        pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
         font = pygame.font.Font(None, 32)
         text = font.render(self.text, 1, self.text_color)
         screen.blit(text, (self.rect.left + 5, self.rect.top + 5))

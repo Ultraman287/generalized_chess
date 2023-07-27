@@ -37,6 +37,23 @@ class IndividualPiece(InteractiveBox):
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
 
+    def get_blit(self):
+        "Turns the name and piece into a surface"
+        text = pygame.font.SysFont("Arial", self.rect.height // 10).render(
+            self.name, True, (0, 0, 0)
+        )
+        piece = pygame.transform.scale(
+            self.piece, (self.rect.width, self.rect.height * 0.8)
+        )
+        piece = pygame.transform.flip(piece, True, False)
+        surface = pygame.Surface((self.rect.width, self.rect.height))
+        surface.fill(self.color)
+        surface.blit(piece, (self.rect.width / 2 - piece.get_width() / 2, 0))
+        surface.blit(
+            text, (self.rect.width / 2 - text.get_width() / 2, self.rect.height * 0.85)
+        )
+        return surface
+
     def draw(self, screen: pygame.Surface):
         pygame.draw.rect(screen, self.color, self.rect)
         pygame.draw.rect(screen, (120, 120, 120), self.rect, 2)

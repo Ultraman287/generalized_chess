@@ -8,6 +8,8 @@ from Helpers.interactive_box import InteractiveBox
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
 
+BLACK, WHITE, CENTER, PHASE, WALK = 0, 255, 60, 15, 20
+
 
 class BoxName(InteractiveBox):
     def __init__(self):
@@ -153,20 +155,19 @@ class BoxInput(InteractiveBox):
                     col = (x - self.rect.left) // -(-420 // mesh_size)
 
                     # Update the value in the current_mesh to represent the drawing
-                    if self.current_mesh[col, row] != 60:
+                    if self.current_mesh[col, row] != CENTER:
                         if event.button == 1:
-                            if self.current_mesh[col, row] == 15:
-                                self.current_mesh[col, row] = 20
+                            if self.current_mesh[col, row] == PHASE:
+                                self.current_mesh[col, row] = WALK
                             else:
                                 self.current_mesh[
                                     col, row
-                                ] = 15  # You can set this value based on your drawing needs
+                                ] = PHASE  # You can set this value based on your drawing needs
                         if event.button == 3:
-                            if self.current_mesh[col, row] == 0:
-                                self.current_mesh[col, row] = 255
+                            if self.current_mesh[col, row] == BLACK:
+                                self.current_mesh[col, row] = WHITE
                             else:
-                                self.current_mesh[col, row] = 0
-                    print(row, col, self.current_mesh[row, col])
+                                self.current_mesh[col, row] = BLACK
 
 
 box_input = BoxInput()
