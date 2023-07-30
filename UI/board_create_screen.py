@@ -13,6 +13,9 @@ BOX_COLOR = (217, 217, 217)
 PIECE_HEIGHT = 100
 PIECE_WIDTH = 140
 
+BLACK_PIECE = 1
+WHITE_PIECE = 2
+
 
 class BoxName(InteractiveBox):
     def __init__(self):
@@ -44,133 +47,96 @@ class BoxName(InteractiveBox):
 box_name = BoxName()
 
 
-class BoxDrawandMove(InteractiveBox):
-    def __init__(self):
-        self.rect_draw = pygame.Rect(73, 184, 186, 65)
-        self.rect_move = pygame.Rect(73, 280, 186, 65)
-        self.text_draw = "Draw"
-        self.text_move = "Move"
-        self.text_color = (0, 0, 0)
-        self.active_color = (250, 220, 220)
-        self.inactive_color = BOX_COLOR
-        self.active_draw = True
-
-    def draw(self, screen):
-        pygame.draw.rect(
-            screen,
-            self.active_color if self.active_draw else self.inactive_color,
-            self.rect_draw,
-        )
-        pygame.draw.rect(screen, (0, 0, 0), self.rect_draw, 2)
-        pygame.draw.rect(
-            screen,
-            self.inactive_color if self.active_draw else self.active_color,
-            self.rect_move,
-        )
-        pygame.draw.rect(screen, (0, 0, 0), self.rect_move, 2)
-        font = pygame.font.Font(None, 32)
-
-        text_draw = font.render(self.text_draw, 1, self.text_color)
-        screen.blit(text_draw, (self.rect_draw.left + 5, self.rect_draw.top + 5))
-
-        text_move = font.render(self.text_move, 1, self.text_color)
-        screen.blit(text_move, (self.rect_move.left + 5, self.rect_move.top + 5))
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect_draw.collidepoint(event.pos):
-                self.active_draw = True
-            elif self.rect_move.collidepoint(event.pos):
-                self.active_draw = False
-            print(f"Active Draw: {self.active_draw}")
-
-    def update(self, screen):
-        pygame.draw.rect(
-            screen,
-            self.active_color if self.active_draw else self.inactive_color,
-            self.rect_draw,
-        )
-        pygame.draw.rect(screen, (0, 0, 0), self.rect_draw, 2)
-        pygame.draw.rect(
-            screen,
-            self.inactive_color if self.active_draw else self.active_color,
-            self.rect_move,
-        )
-        pygame.draw.rect(screen, (0, 0, 0), self.rect_move, 2)
-        font = pygame.font.Font(None, 32)
-
-        text_draw = font.render(self.text_draw, 1, self.text_color)
-        screen.blit(text_draw, (self.rect_draw.left + 5, self.rect_draw.top + 5))
-
-        text_move = font.render(self.text_move, 1, self.text_color)
-        screen.blit(text_move, (self.rect_move.left + 5, self.rect_move.top + 5))
-
-
 class BoxInput(InteractiveBox):
     def __init__(self, mesh=np.zeros((8, 8))):
         self.rect = pygame.Rect(272, 113, 460, 460)
-
-        self.current_mesh = mesh
+        self.pieces = {}
+        self.piece_position_mesh = mesh
+        self.piece_alignment_mesh = np.zeros((8, 8))
+        self.chessboard = np.indices((8, 8)).sum(axis=0) % 2
 
     def draw(self, screen):
         # Scaling up the mesh to fit the box
 
-        surf = pygame.surfarray.make_surface(self.current_mesh)
+        surf = pygame.surfarray.make_surface(self.chessboard)
         surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
-        surf = pygame.transform.flip(surf, True, False)
+        # surf = pygame.transform.flip(surf, True, False)
 
         screen.blit(surf, self.rect)
 
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
+
+        width_difference = self.rect.width // 8 - self.rect.width // 10
+        height_difference = self.rect.height // 8 - self.rect.height // 10
+
+        for position, piece in self.pieces.items():
+            surf = pygame.transform.scale(
+                piece.piece, (self.rect.width // 10, self.rect.height // 10)
+            )
+            if self.piece_alignment_mesh[position[0]][position[1]] == BLACK_PIECE:
+                surf = pygame.transform.flip(surf, True, True)
+
+            screen.blit(
+                surf,
+                (
+                    width_difference // 2
+                    + self.rect.left
+                    + position[1] * self.rect.width // 8,
+                    height_difference // 2
+                    + self.rect.top
+                    + position[0] * self.rect.height // 8,
+                ),
+            )
 
     def update(self, screen):
-        surf = pygame.surfarray.make_surface(self.current_mesh)
-        surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
-        surf = pygame.transform.flip(surf, True, False)
+        self.draw(screen)
 
-        screen.blit(surf, self.rect)
+        # surf = pygame.surfarray.make_surface(self.piece_position_mesh)
+        # surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
+        # # surf = pygame.transform.flip(surf, True, False)
 
-        pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
+        # screen.blit(surf, self.rect)
 
-    def handle_event(self, event):
-        if self.current_mesh.shape == (64, 64):
-            if pygame.mouse.get_pressed()[0]:
-                try:
-                    if self.rect.collidepoint(event.pos):
-                        # Calculate the row and column indices corresponding to the mouse click
-                        mesh_size = self.current_mesh.shape[0]
-                        x, y = event.pos
-                        row = (y - self.rect.top) // -(-420 // mesh_size)
-                        col = (x - self.rect.left) // -(-420 // mesh_size)
+        # pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
 
-                        # Update the value in the current_mesh to represent the drawing
-                        self.current_mesh[col, row] = 255
-                except AttributeError:
-                    pass
-        else:
+    def handle_event(self, event, piece: IndividualPiece = None):
+        """Handles events for the interactive box
+        Each piece is stored as a tuple (piece_name, is_white) in the mesh and the pieces dictionary
+        """
+        if piece is not None:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
                     # Calculate the row and column indices corresponding to the mouse click
-                    mesh_size = self.current_mesh.shape[0]
+                    mesh_size = self.piece_position_mesh.shape[0]
                     x, y = event.pos
-                    row = (y - self.rect.top) // -(-420 // mesh_size)
-                    col = (x - self.rect.left) // -(-420 // mesh_size)
+                    row = (y - self.rect.top) // -(-self.rect.height // mesh_size)
+                    col = (x - self.rect.left) // -(-self.rect.width // mesh_size)
 
-                    # Update the value in the current_mesh to represent the drawing
-                    if self.current_mesh[col, row] != 60:
+                    if 0 <= row < mesh_size and 0 <= col < mesh_size:
                         if event.button == 1:
-                            if self.current_mesh[col, row] == 15:
-                                self.current_mesh[col, row] = 20
+                            if (
+                                self.piece_position_mesh[row][col] != 0
+                                and self.piece_position_mesh[row][col] == piece.hash
+                            ):
+                                self.piece_alignment_mesh[row][col] = (
+                                    WHITE_PIECE
+                                    if self.piece_alignment_mesh[row][col]
+                                    == BLACK_PIECE
+                                    else BLACK_PIECE
+                                )
+                                print(f"Piece flipped at {row}, {col}")
                             else:
-                                self.current_mesh[
-                                    col, row
-                                ] = 15  # You can set this value based on your drawing needs
-                        if event.button == 3:
-                            if self.current_mesh[col, row] == 0:
-                                self.current_mesh[col, row] = 255
-                            else:
-                                self.current_mesh[col, row] = 0
-                    print(row, col, self.current_mesh[row, col])
+                                self.piece_position_mesh[row][col] = piece.hash
+                                self.piece_alignment_mesh[row][col] = WHITE_PIECE
+                                self.pieces[
+                                    (row, col)
+                                ] = piece  # Storing the piece object for faster access
+                                print(f"Piece placed at {row}, {col}")
+
+                        elif event.button == 3:
+                            self.piece_position_mesh[row][col] = 0
+                            self.piece_alignment_mesh[row][col] = 0
+                            self.pieces.pop((row, col), None)
 
 
 box_input = BoxInput()
@@ -212,10 +178,6 @@ class BoxSelect(InteractiveBox):
                 piece.get_blit(),
                 (self.rect.width / 2 - piece.piece.get_width() / 2, i * PIECE_HEIGHT),
             )
-            # self.pieces_surface.blit(
-            #     piece.piece,
-            #     (self.rect.width / 2 - piece.piece.get_width() / 2, i * PIECE_HEIGHT),
-            # )
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -232,19 +194,17 @@ class BoxSelect(InteractiveBox):
                     if clicked_piece < len(
                         self.pieces
                     ):  # Handles the case where the user clicks on the bottom of the box
-                        print(self.pieces[clicked_piece].name)
+                        return self.pieces[clicked_piece]
 
     def draw(self, screen: pygame.Surface):
         pygame.draw.rect(screen, self.color_inactive, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
         ### Drawing the surface with the offset
         screen.blit(self.pieces_surface, self.rect, (0, self.y_offset, 165, 460))
-        # screen.blit(self.pieces_surface, self.rect, (0, 0, 165, 460))
 
     def update(self, screen: pygame.Surface):
         pygame.draw.rect(screen, self.color_inactive, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
-        # screen.blit(self.pieces_surface, self.rect, (0, 0, 165, 460))
         screen.blit(self.pieces_surface, self.rect, (0, self.y_offset, 165, 460))
 
 
@@ -316,25 +276,49 @@ class BoxDelete(InteractiveBox):
 box_delete = BoxDelete()
 
 
+class BoxCurrentlySelected(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(352, 96, 300, 18)
+        self.text = "Current Selected: "
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color_inactive, self.rect)
+        pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
+        font = pygame.font.Font(None, 18)
+
+        text_draw = font.render(self.text, 1, self.text_color)
+        screen.blit(text_draw, (self.rect.left + 5, self.rect.top + 5))
+
+    def update(self, screen):
+        self.draw(screen)
+
+
+box_currently_selected = BoxCurrentlySelected()
+
+
 class BoardCreateScreen:
     def __init__(
         self,
         rows: int = 8,
         cols: int = 8,
-        movement: np.ndarray = np.zeros((15, 15)),
-        drawing: np.ndarray = np.zeros((64, 64)),
+        board: np.ndarray = np.zeros((8, 8)),
     ):
         self.rows = rows
         self.cols = cols
-        self.drawing = drawing
+        self.board = board
         self.current_mode: str = "draw"
         self.box_name = box_name
-
+        self.selected_piece = None
         self.box_back = box_back
         self.box_save = box_save
         self.box_input = box_input
         self.box_delete = box_delete
         self.box_select = box_select
+        self.box_currently_selected = box_currently_selected
 
     def draw(self, screen):
         """Draws the make piece window"""
@@ -345,16 +329,22 @@ class BoardCreateScreen:
         self.box_input.draw(screen)
         self.box_delete.draw(screen)
         self.box_select.draw(screen)
+        self.box_currently_selected.draw(screen)
 
     def handle_event(self, event):
         """Handles events for the make piece window"""
 
         self.box_name.handle_event(event)
-        self.box_input.handle_event(event)
-        self.drawing = self.box_input.current_mesh
         self.box_save.handle_event(event, self.save)
         self.box_delete.handle_event(event)
         self.box_select.handle_event(event)
+
+        selection = self.box_select.handle_event(event)
+        if selection is not None:
+            self.selected_piece = selection
+            self.box_currently_selected.text = f"Current Selected: {selection.name}"
+
+        self.box_input.handle_event(event, self.selected_piece)
 
         return self.box_back.handle_event(event)
 
@@ -367,23 +357,19 @@ class BoardCreateScreen:
         self.box_input.update(screen)
         self.box_delete.update(screen)
         self.box_select.update(screen)
+        self.box_currently_selected.update(screen)
 
     def reset(self, name: str = None):
         if name is not None:
             self.box_name.text = name
             self.box_name.active = False
-            self.movement = np.load(os.path.join(os.getcwd(), "Pieces", name + ".npz"))[
-                "movement"
-            ]
-            self.drawing = np.load(os.path.join(os.getcwd(), "Pieces", name + ".npz"))[
-                "drawing"
-            ]
-            self.box_input.current_mesh = self.drawing
+            self.board = np.load(os.path.join(os.getcwd(), "Boards", name))["board"]
+            self.box_input.piece_position_mesh = self.board
             self.box_back.previous_window = "board_existing_screen"
         else:
             self.box_name.text = "Enter Name"
-            self.drawing = np.zeros((64, 64))
-            self.box_input.current_mesh = self.drawing
+            self.board = np.zeros((8, 8))
+            self.box_input.piece_position_mesh = self.board
             self.box_name.active = False
             self.box_back.previous_window = "board_options_screen"
 
@@ -394,4 +380,4 @@ class BoardCreateScreen:
 
         file_name = os.path.join(folder, self.box_name.text + ".npz")
 
-        np.savez(file_name, drawing=self.drawing, movement=self.movement)
+        np.savez(file_name, board=self.board)

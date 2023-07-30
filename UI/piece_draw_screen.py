@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 from dataclasses import dataclass
 import os
-
+import pickle
 from Helpers.interactive_box import InteractiveBox
 
 BOARD_ROWS, BOARD_COLS = 8, 8
@@ -338,3 +338,11 @@ class MakePiece:
         file_name = os.path.join(folder, self.box_name.text + ".npz")
 
         np.savez(file_name, drawing=self.drawing, movement=self.movement)
+        try:
+            with open("pieces.pkl", "rb") as f:
+                pieces = pickle.load(f)
+                pieces[hash(self.box_name.text)] = self.box_name.text
+        except EOFError:
+            pieces = {hash(self.box_name.text): self.box_name.text}
+        with open("pieces.pkl", "wb") as f:
+            pickle.dump(pieces, f)

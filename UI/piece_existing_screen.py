@@ -36,6 +36,8 @@ class IndividualPiece(InteractiveBox):
         self.color = BOX_COLOR
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
+        self.is_white = False
+        self.hash = hash(self.name)
 
     def get_blit(self):
         "Turns the name and piece into a surface"
