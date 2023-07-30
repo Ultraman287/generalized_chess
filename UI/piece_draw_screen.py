@@ -79,7 +79,6 @@ class BoxDrawandMove(InteractiveBox):
                 self.active_draw = True
             elif self.rect_move.collidepoint(event.pos):
                 self.active_draw = False
-            print(f"Active Draw: {self.active_draw}")
 
     def update(self, screen):
         pygame.draw.rect(
