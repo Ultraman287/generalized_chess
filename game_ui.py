@@ -1,5 +1,8 @@
 import pygame
 import thorpy
+import os
+
+import hashlib
 
 pygame.init()
 

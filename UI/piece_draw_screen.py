@@ -5,10 +5,14 @@ import os
 import pickle
 from Helpers.interactive_box import InteractiveBox
 
+import hashlib
+
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
 
 BLACK, WHITE, CENTER, PHASE, WALK = 0, 255, 60, 15, 20
+
+TOTAL_EXPECTED_PIECES = 1000
 
 
 class BoxName(InteractiveBox):
@@ -340,8 +344,14 @@ class MakePiece:
         try:
             with open("pieces.pkl", "rb") as f:
                 pieces = pickle.load(f)
-                pieces[hash(self.box_name.text)] = self.box_name.text
+                pieces[
+                    int(hashlib.sha1(self.box_name.text.encode()).hexdigest(), 16)
+                    % TOTAL_EXPECTED_PIECES
+                ] = self.box_name.text
         except EOFError:
-            pieces = {hash(self.box_name.text): self.box_name.text}
+            pieces = {
+                int(hashlib.sha1(self.box_name.text.encode()).hexdigest(), 16)
+                % TOTAL_EXPECTED_PIECES: self.box_name.text
+            }
         with open("pieces.pkl", "wb") as f:
             pickle.dump(pieces, f)

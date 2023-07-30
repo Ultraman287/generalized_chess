@@ -4,7 +4,10 @@ from dataclasses import dataclass
 import os
 import math
 
+import hashlib
 from Helpers.interactive_box import InteractiveBox
+
+from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES
 
 BOX_COLOR = (217, 217, 217)
 
@@ -37,7 +40,10 @@ class IndividualPiece(InteractiveBox):
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
         self.is_white = False
-        self.hash = hash(self.name)
+        self.hash = (
+            int(hashlib.sha1(self.name.encode()).hexdigest(), 16)
+            % TOTAL_EXPECTED_PIECES
+        )
 
     def get_blit(self):
         "Turns the name and piece into a surface"

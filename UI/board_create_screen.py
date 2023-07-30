@@ -3,9 +3,11 @@ import numpy as np
 from dataclasses import dataclass
 import os
 
+import hashlib
 from Helpers.interactive_box import InteractiveBox
 from UI.piece_existing_screen import IndividualPiece
 import math
+import pickle
 
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
@@ -138,6 +140,24 @@ class BoxInput(InteractiveBox):
                             self.piece_alignment_mesh[row][col] = 0
                             self.pieces.pop((row, col), None)
 
+    def get_pieces_from_hash(self, piece_dictionary):
+        with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
+            hash_to_piece = pickle.load(f)
+            print(hash_to_piece)
+            print(self.piece_position_mesh)
+
+            pieces = np.where(self.piece_position_mesh != 0)
+
+            # piece_names = [
+            #     hash_to_piece[self.piece_position_mesh[r][c]]
+            #     for r, c in zip(pieces[0], pieces[1])
+            # ]
+            for i, piece in enumerate(zip(pieces[0], pieces[1])):
+                r, c = piece
+                self.pieces[(r, c)] = piece_dictionary[
+                    hash_to_piece[self.piece_position_mesh[r][c]]
+                ]
+
 
 box_input = BoxInput()
 
@@ -152,6 +172,7 @@ class BoxSelect(InteractiveBox):
         self.color_inactive = BOX_COLOR
         self.y_offset = 0
         self.pieces = []
+        self.piece_dictionary = {}
         self.get_all_pieces()
 
     def get_all_pieces(self):
@@ -159,18 +180,19 @@ class BoxSelect(InteractiveBox):
         self.pieces = []
         pieces = os.listdir(os.path.join(os.getcwd(), "Pieces"))
         for i, piece in enumerate(pieces):
-            self.pieces.append(
-                IndividualPiece(
-                    pygame.surfarray.make_surface(
-                        np.load(os.path.join(os.getcwd(), "Pieces", piece))["drawing"]
-                    ),
-                    self.rect.x + 40,
-                    self.rect.y + 2 + i * PIECE_HEIGHT,
-                    PIECE_WIDTH,
-                    PIECE_HEIGHT,
-                    piece[:-4],
-                )
+            cur_piece = IndividualPiece(
+                pygame.surfarray.make_surface(
+                    np.load(os.path.join(os.getcwd(), "Pieces", piece))["drawing"]
+                ),
+                self.rect.x + 40,
+                self.rect.y + 2 + i * PIECE_HEIGHT,
+                PIECE_WIDTH,
+                PIECE_HEIGHT,
+                piece[:-4],
             )
+            self.pieces.append(cur_piece)
+            self.piece_dictionary[cur_piece.name] = cur_piece
+
         # updating the pieces surface when the pieces are updated
         self.pieces_surface = pygame.Surface((165, PIECE_HEIGHT * len(self.pieces)))
         for i, piece in enumerate(self.pieces):
@@ -345,6 +367,8 @@ class BoardCreateScreen:
             self.box_currently_selected.text = f"Current Selected: {selection.name}"
 
         self.box_input.handle_event(event, self.selected_piece)
+        self.piece_position = self.box_input.piece_position_mesh
+        self.piece_alignment = self.box_input.piece_alignment_mesh
 
         return self.box_back.handle_event(event)
 
@@ -369,15 +393,19 @@ class BoardCreateScreen:
             self.piece_position = np.load(os.path.join(os.getcwd(), "Boards", name))[
                 "piece_position"
             ]
+            self.box_input.pieces = {}
             self.box_input.piece_position_mesh = self.piece_position
             self.box_input.piece_alignment_mesh = self.piece_alignment
+            self.box_input.get_pieces_from_hash(self.box_select.piece_dictionary)
             self.box_back.previous_window = "board_options_screen"
         else:
             self.box_name.text = "Enter Name"
             self.piece_position = np.zeros((8, 8))
             self.piece_alignment = np.zeros((8, 8))
+            self.box_input.pieces = {}
             self.box_input.piece_position_mesh = self.piece_position
             self.box_input.piece_alignment_mesh = self.piece_alignment
+
             self.box_name.active = False
             self.box_back.previous_window = "board_options_screen"
 
@@ -391,5 +419,5 @@ class BoardCreateScreen:
         np.savez(
             file_name,
             piece_alignment=self.piece_alignment,
-            piece_position=self.piece_position_mesh,
+            piece_position=self.piece_position,
         )
