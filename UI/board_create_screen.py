@@ -266,10 +266,10 @@ class BoxDelete(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 if os.path.exists(
-                    os.path.join(os.getcwd(), "Pieces", box_name.text + ".npz")
+                    os.path.join(os.getcwd(), "Boards", box_name.text + ".npz")
                 ):
                     os.remove(
-                        os.path.join(os.getcwd(), "Pieces", box_name.text + ".npz")
+                        os.path.join(os.getcwd(), "Boards", box_name.text + ".npz")
                     )
 
 
@@ -305,11 +305,11 @@ class BoardCreateScreen:
         self,
         rows: int = 8,
         cols: int = 8,
-        board: np.ndarray = np.zeros((8, 8)),
     ):
         self.rows = rows
         self.cols = cols
-        self.board = board
+        self.piece_alignment = np.zeros((8, 8))
+        self.piece_position_mesh = np.zeros((8, 8))
         self.current_mode: str = "draw"
         self.box_name = box_name
         self.selected_piece = None
@@ -361,23 +361,35 @@ class BoardCreateScreen:
 
     def reset(self, name: str = None):
         if name is not None:
-            self.box_name.text = name
+            self.box_name.text = name.split("/")[-1][:-4]
             self.box_name.active = False
-            self.board = np.load(os.path.join(os.getcwd(), "Boards", name))["board"]
-            self.box_input.piece_position_mesh = self.board
-            self.box_back.previous_window = "board_existing_screen"
+            self.piece_alignment = np.load(os.path.join(os.getcwd(), "Boards", name))[
+                "piece_alignment"
+            ]
+            self.piece_position = np.load(os.path.join(os.getcwd(), "Boards", name))[
+                "piece_position"
+            ]
+            self.box_input.piece_position_mesh = self.piece_position
+            self.box_input.piece_alignment_mesh = self.piece_alignment
+            self.box_back.previous_window = "board_options_screen"
         else:
             self.box_name.text = "Enter Name"
-            self.board = np.zeros((8, 8))
-            self.box_input.piece_position_mesh = self.board
+            self.piece_position = np.zeros((8, 8))
+            self.piece_alignment = np.zeros((8, 8))
+            self.box_input.piece_position_mesh = self.piece_position
+            self.box_input.piece_alignment_mesh = self.piece_alignment
             self.box_name.active = False
             self.box_back.previous_window = "board_options_screen"
 
     def save(self):
-        """Saves the piece to the pieces folder"""
+        """Saves the piece to the Boards folder"""
 
-        folder = os.path.join(os.getcwd(), "Pieces")
+        folder = os.path.join(os.getcwd(), "Boards")
 
         file_name = os.path.join(folder, self.box_name.text + ".npz")
 
-        np.savez(file_name, board=self.board)
+        np.savez(
+            file_name,
+            piece_alignment=self.piece_alignment,
+            piece_position=self.piece_position_mesh,
+        )

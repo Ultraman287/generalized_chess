@@ -2,8 +2,18 @@ import pygame
 import numpy as np
 from dataclasses import dataclass
 import os
-
+import tkinter
+import tkinter.filedialog
 from Helpers.interactive_box import InteractiveBox
+
+
+def prompt_file():
+    """Create a Tk file dialog and cleanup when finished"""
+    top = tkinter.Tk()
+    top.withdraw()  # hide window
+    file_name = tkinter.filedialog.askopenfilename()
+    top.destroy()
+    return file_name
 
 
 class CreateNewBoard(InteractiveBox):
@@ -33,9 +43,11 @@ class EditExistingBoard(InteractiveBox):
 
     def handle_event(self, event):
         """Handles events for the interactive box"""
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                return "board_existing_screen"
+                file = prompt_file()
+                if file:
+                    return "board_create_screen", file
 
 
 class BackButton(InteractiveBox):
@@ -61,13 +73,13 @@ class BoardOptionsScreen:
         self.back_button = BackButton()
 
     def handle_event(self, event):
-        # self.new_Board_button.handle_event(event)
-        # self.edit_Board_button.handle_event(event)
-        return (
-            self.new_board_button.handle_event(event)
-            or self.edit_board_button.handle_event(event)
-            or self.back_button.handle_event(event)
-        )
+        selected = self.edit_board_button.handle_event(event)
+        if selected:
+            return selected
+
+        return self.new_board_button.handle_event(
+            event
+        ) or self.back_button.handle_event(event)
 
     def reset(self):
         pass
