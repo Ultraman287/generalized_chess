@@ -93,14 +93,6 @@ class BoxInput(InteractiveBox):
     def update(self, screen):
         self.draw(screen)
 
-        # surf = pygame.surfarray.make_surface(self.piece_position_mesh)
-        # surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
-        # # surf = pygame.transform.flip(surf, True, False)
-
-        # screen.blit(surf, self.rect)
-
-        # pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
-
     def handle_event(self, event, piece: IndividualPiece = None):
         """Handles events for the interactive box
         Each piece is stored as a tuple (piece_name, is_white) in the mesh and the pieces dictionary
@@ -141,6 +133,8 @@ class BoxInput(InteractiveBox):
                             self.pieces.pop((row, col), None)
 
     def get_pieces_from_hash(self, piece_dictionary):
+        """Gets the pieces from the hashes stored in the pickle file"""
+
         with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
             hash_to_piece = pickle.load(f)
             print(hash_to_piece)
@@ -148,10 +142,6 @@ class BoxInput(InteractiveBox):
 
             pieces = np.where(self.piece_position_mesh != 0)
 
-            # piece_names = [
-            #     hash_to_piece[self.piece_position_mesh[r][c]]
-            #     for r, c in zip(pieces[0], pieces[1])
-            # ]
             for i, piece in enumerate(zip(pieces[0], pieces[1])):
                 r, c = piece
                 self.pieces[(r, c)] = piece_dictionary[

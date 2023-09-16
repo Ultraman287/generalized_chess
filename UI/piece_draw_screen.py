@@ -241,6 +241,12 @@ class BoxDelete(InteractiveBox):
                     os.remove(
                         os.path.join(os.getcwd(), "Pieces", box_name.text + ".npz")
                     )
+                    with open("pieces.pkl", "rb") as f:
+                        pieces = pickle.load(f)
+                        pieces[
+                            int(hashlib.sha1(box_name.text.encode()).hexdigest(), 16)
+                            % TOTAL_EXPECTED_PIECES
+                        ] = None
 
 
 box_delete = BoxDelete()

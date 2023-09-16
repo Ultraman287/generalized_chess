@@ -19,7 +19,7 @@ class PlayChess(InteractiveBox):
         """Handles events for the interactive box"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                return "play_chess_screen"
+                return "game_options_screen"
 
 
 class CreateCustomBoard(InteractiveBox):
