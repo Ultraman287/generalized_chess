@@ -112,14 +112,23 @@ class BoxInput:
 
                 if 0 <= row < mesh_size and 0 <= col < mesh_size:
                     print(f"piece: {self.pieces.get((row, col), None)}")
-                    if self.selected_piece:
+                    if self.selected_piece is not None:
+                        print(
+                            f"Currently the piece is at {self.selected_piece.position}"
+                        )
                         if (row, col) in self.piece_can_move_to:
-                            self.pieces.pop(self.selected_piece.position)
+                            del self.pieces[
+                                (
+                                    self.selected_piece.position[0],
+                                    self.selected_piece.position[1],
+                                )
+                            ]
                             self.piece_position[self.selected_piece.position] = 0
                             self.piece_position[row, col] = self.selected_piece.hash
                             self.piece_alignment[self.selected_piece.position] = 0
                             self.piece_alignment[row, col] = self.selected_piece.color
                             self.selected_piece.position = (row, col)
+                            print(self.selected_piece.position)
                             self.piece_can_move_to = []
                             self.pieces[(row, col)] = self.selected_piece
                             self.selected_piece = None
@@ -169,6 +178,46 @@ class BoxInput:
                 ),
             )
 
+        # Adding a low opacity white rectangle to the selected piece
+
+        if self.selected_piece is not None:
+            selected_filter = pygame.Surface(
+                (self.rect.width // 10, self.rect.height // 10)
+            )
+            selected_filter.set_alpha(100)
+            selected_filter.fill((255, 255, 255))
+            screen.blit(
+                selected_filter,
+                (
+                    width_difference // 2
+                    + self.rect.left
+                    + self.selected_piece.position[1] * self.rect.width // 8,
+                    height_difference // 2
+                    + self.rect.top
+                    + self.selected_piece.position[0] * self.rect.height // 8,
+                ),
+            )
+
+        # Adding a low opacity green rectangle to the valid moves
+
+        for position in self.piece_can_move_to:
+            valid_move_filter = pygame.Surface(
+                (self.rect.width // 10, self.rect.height // 10)
+            )
+            valid_move_filter.set_alpha(100)
+            valid_move_filter.fill((0, 255, 0))
+            screen.blit(
+                valid_move_filter,
+                (
+                    width_difference // 2
+                    + self.rect.left
+                    + position[1] * self.rect.width // 8,
+                    height_difference // 2
+                    + self.rect.top
+                    + position[0] * self.rect.height // 8,
+                ),
+            )
+
     def update(self, screen):
         self.draw(screen)
 
@@ -186,9 +235,14 @@ class BoxInput:
                 r, c = piece
                 self.pieces[(r, c)] = piece_dictionary[
                     hash_to_piece[self.piece_position[r][c]]
-                ]
+                ].copy()
                 self.pieces[(r, c)].position = (r, c)
                 self.pieces[(r, c)].color = self.piece_alignment[r][c]
+                # When a piece is black, we rotate the movement matrix by 180 degrees to account for the fact that the board is flipped
+                if self.pieces[(r, c)].color == BLACK_PIECE:
+                    self.pieces[(r, c)].movement = np.rot90(
+                        self.pieces[(r, c)].movement, 2
+                    )
 
 
 class GameScreen:

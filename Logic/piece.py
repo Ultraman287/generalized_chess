@@ -6,7 +6,7 @@ import math
 
 import hashlib
 
-from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, PHASE, WALK
+from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, PHASE, WALK, BLACK, WHITE
 
 
 class GamePiece:
@@ -23,6 +23,18 @@ class GamePiece:
 
     def get_valid_moves(self, board, position):
         """Returns a list of valid moves for the piece"""
-        print(self.movement)
-        print(np.where(self.movement == PHASE))
-        return [(4, 4)]
+
+        movement_map = self.movement[
+            15 - position[0] - 8 : 15 - position[0],
+            15 - position[1] - 8 : 15 - position[1],
+        ]
+        valid_moves = []
+
+        for row in range(movement_map.shape[0]):
+            for col in range(movement_map.shape[1]):
+                if movement_map[row, col] == 15 and board[row, col] == 0:
+                    valid_moves.append((row, col))
+        return valid_moves
+
+    def copy(self):
+        return GamePiece(self.piece, self.movement, self.name)
