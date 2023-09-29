@@ -9,6 +9,7 @@ from UI.piece_existing_screen import IndividualPiece
 import math
 import pickle
 
+
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
 
@@ -56,6 +57,7 @@ class BoxInput(InteractiveBox):
         self.piece_position_mesh = mesh
         self.piece_alignment_mesh = np.zeros((8, 8))
         self.chessboard = np.indices((8, 8)).sum(axis=0) % 2
+        self.kings = []
 
     def draw(self, screen):
         # Scaling up the mesh to fit the box
@@ -89,6 +91,23 @@ class BoxInput(InteractiveBox):
                     + position[0] * self.rect.height // 8,
                 ),
             )
+
+            if piece.is_king:
+                pygame.draw.circle(
+                    screen,
+                    (255, 0, 0),
+                    (
+                        width_difference // 2
+                        + self.rect.left
+                        + position[1] * self.rect.width // 8
+                        + self.rect.width // 16,
+                        height_difference // 2
+                        + self.rect.top
+                        + position[0] * self.rect.height // 8
+                        + self.rect.height // 16,
+                    ),
+                    self.rect.width // 80,
+                )
 
     def update(self, screen):
         self.draw(screen)
@@ -131,6 +150,14 @@ class BoxInput(InteractiveBox):
                             self.piece_position_mesh[row][col] = 0
                             self.piece_alignment_mesh[row][col] = 0
                             self.pieces.pop((row, col), None)
+
+                        elif event.button == 2:
+                            if (row, col) in self.kings:
+                                self.kings.remove((row, col))
+                                self.pieces[(row, col)].is_king = False
+                            else:
+                                self.kings.append((row, col))
+                                self.pieces[(row, col)].is_king = True
 
     def get_pieces_from_hash(self, piece_dictionary):
         """Gets the pieces from the hashes stored in the pickle file"""
@@ -410,4 +437,5 @@ class BoardCreateScreen:
             file_name,
             piece_alignment=self.piece_alignment,
             piece_position=self.piece_position,
+            kings=self.box_input.kings,
         )

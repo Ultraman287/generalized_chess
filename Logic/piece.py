@@ -20,8 +20,9 @@ class GamePiece:
         )
         self.position = None
         self.color = None
+        self.is_king = False
 
-    def get_valid_moves(self, board, position):
+    def get_valid_moves(self, board, position, alignment):
         """Returns a list of valid moves for the piece"""
 
         movement_map = self.movement[
@@ -32,8 +33,13 @@ class GamePiece:
 
         for row in range(movement_map.shape[0]):
             for col in range(movement_map.shape[1]):
-                if movement_map[row, col] == 15 and board[row, col] == 0:
-                    valid_moves.append((row, col))
+                if movement_map[row, col] == 15:
+                    if board[row, col] == 0:
+                        valid_moves.append((row, col))
+                    else:
+                        if alignment[row, col] != self.color:
+                            valid_moves.append((row, col))
+
         return valid_moves
 
     def copy(self):

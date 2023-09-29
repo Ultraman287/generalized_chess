@@ -9,6 +9,8 @@ from Helpers.interactive_box import InteractiveBox
 from UI.piece_existing_screen import IndividualPiece
 from UI.board_create_screen import PIECE_HEIGHT, PIECE_WIDTH, BLACK_PIECE, WHITE_PIECE
 from Logic.piece import GamePiece
+from Logic.game import GameLogic
+
 
 BOX_COLOR = (217, 217, 217)
 
@@ -93,156 +95,124 @@ class BoxInput:
     def __init__(self):
         self.rect = pygame.Rect(259, 79, 460, 460)
         self.chessboard = np.indices((8, 8)).sum(axis=0) % 2
-        self.piece_alignment = np.zeros((8, 8))
-        self.piece_position = np.zeros((8, 8))
-        self.pieces = {}
-        self.selected_piece = None
-        self.piece_can_move_to = set()
+        self.game = GameLogic()
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 # Calculate the row and column indices corresponding to the mouse click
-                mesh_size = self.piece_position.shape[0]
+                mesh_size = self.game.piece_position.shape[0]
                 x, y = event.pos
                 row = (y - self.rect.top) // -(-self.rect.height // mesh_size)
                 col = (x - self.rect.left) // -(-self.rect.width // mesh_size)
 
                 print(f"row: {row}, col: {col}")
 
-                if 0 <= row < mesh_size and 0 <= col < mesh_size:
-                    print(f"piece: {self.pieces.get((row, col), None)}")
-                    if self.selected_piece is not None:
-                        print(
-                            f"Currently the piece is at {self.selected_piece.position}"
-                        )
-                        if (row, col) in self.piece_can_move_to:
-                            del self.pieces[
-                                (
-                                    self.selected_piece.position[0],
-                                    self.selected_piece.position[1],
-                                )
-                            ]
-                            self.piece_position[self.selected_piece.position] = 0
-                            self.piece_position[row, col] = self.selected_piece.hash
-                            self.piece_alignment[self.selected_piece.position] = 0
-                            self.piece_alignment[row, col] = self.selected_piece.color
-                            self.selected_piece.position = (row, col)
-                            print(self.selected_piece.position)
-                            self.piece_can_move_to = []
-                            self.pieces[(row, col)] = self.selected_piece
-                            self.selected_piece = None
-
-                        else:
-                            self.selected_piece = None
-                            self.piece_can_move_to = []
-                    else:
-                        self.selected_piece = self.pieces.get((row, col), None)
-                        print(f"selected piece: {self.selected_piece}")
-                        if self.selected_piece:
-                            self.piece_can_move_to = (
-                                self.selected_piece.get_valid_moves(
-                                    self.piece_position, (row, col)
-                                )
-                            )
-                            print(f"piece can move to: {self.piece_can_move_to}")
+                self.game.handle_press(row, col)
 
     def draw(self, screen):
-        surf = pygame.surfarray.make_surface(self.chessboard)
-        surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
-        # surf = pygame.transform.flip(surf, True, False)
-
-        screen.blit(surf, self.rect)
-
-        pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
-
-        width_difference = self.rect.width // 8 - self.rect.width // 10
-        height_difference = self.rect.height // 8 - self.rect.height // 10
-
-        for position, piece in self.pieces.items():
-            surf = pygame.transform.scale(
-                piece.piece, (self.rect.width // 10, self.rect.height // 10)
+        if self.game.game_over:
+            font = pygame.font.SysFont("Arial", 40)
+            text = font.render(
+                f"Game Over! {self.game.winner} wins!", True, (255, 255, 255)
             )
-            if self.piece_alignment[position[0]][position[1]] == BLACK_PIECE:
-                surf = pygame.transform.flip(surf, True, True)
-
             screen.blit(
-                surf,
+                text,
                 (
-                    width_difference // 2
-                    + self.rect.left
-                    + position[1] * self.rect.width // 8,
-                    height_difference // 2
-                    + self.rect.top
-                    + position[0] * self.rect.height // 8,
+                    self.rect.left + self.rect.width // 2 - text.get_width() // 2,
+                    self.rect.top + self.rect.height // 2 - text.get_height() // 2,
                 ),
             )
+        else:
+            surf = pygame.surfarray.make_surface(self.chessboard)
+            surf = pygame.transform.scale(surf, (self.rect.width, self.rect.height))
+            # surf = pygame.transform.flip(surf, True, False)
 
-        # Adding a low opacity white rectangle to the selected piece
+            screen.blit(surf, self.rect)
 
-        if self.selected_piece is not None:
-            selected_filter = pygame.Surface(
-                (self.rect.width // 10, self.rect.height // 10)
-            )
-            selected_filter.set_alpha(100)
-            selected_filter.fill((255, 255, 255))
-            screen.blit(
-                selected_filter,
-                (
-                    width_difference // 2
-                    + self.rect.left
-                    + self.selected_piece.position[1] * self.rect.width // 8,
-                    height_difference // 2
-                    + self.rect.top
-                    + self.selected_piece.position[0] * self.rect.height // 8,
-                ),
-            )
+            pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
 
-        # Adding a low opacity green rectangle to the valid moves
+            width_difference = self.rect.width // 8 - self.rect.width // 10
+            height_difference = self.rect.height // 8 - self.rect.height // 10
 
-        for position in self.piece_can_move_to:
-            valid_move_filter = pygame.Surface(
-                (self.rect.width // 10, self.rect.height // 10)
-            )
-            valid_move_filter.set_alpha(100)
-            valid_move_filter.fill((0, 255, 0))
-            screen.blit(
-                valid_move_filter,
-                (
-                    width_difference // 2
-                    + self.rect.left
-                    + position[1] * self.rect.width // 8,
-                    height_difference // 2
-                    + self.rect.top
-                    + position[0] * self.rect.height // 8,
-                ),
-            )
+            for position, piece in self.game.pieces.items():
+                surf = pygame.transform.scale(
+                    piece.piece, (self.rect.width // 10, self.rect.height // 10)
+                )
+                if self.game.piece_alignment[position[0]][position[1]] == BLACK_PIECE:
+                    surf = pygame.transform.flip(surf, True, True)
+
+                screen.blit(
+                    surf,
+                    (
+                        width_difference // 2
+                        + self.rect.left
+                        + position[1] * self.rect.width // 8,
+                        height_difference // 2
+                        + self.rect.top
+                        + position[0] * self.rect.height // 8,
+                    ),
+                )
+
+                if piece.is_king:
+                    pygame.draw.circle(
+                        screen,
+                        (255, 0, 0),
+                        (
+                            width_difference // 2
+                            + self.rect.left
+                            + position[1] * self.rect.width // 8
+                            + self.rect.width // 16,
+                            height_difference // 2
+                            + self.rect.top
+                            + position[0] * self.rect.height // 8
+                            + self.rect.height // 16,
+                        ),
+                        self.rect.width // 80,
+                    )
+
+            # Adding a low opacity white rectangle to the selected piece
+
+            if self.game.selected_piece is not None:
+                selected_filter = pygame.Surface(
+                    (self.rect.width // 10, self.rect.height // 10)
+                )
+                selected_filter.set_alpha(100)
+                selected_filter.fill((255, 255, 255))
+                screen.blit(
+                    selected_filter,
+                    (
+                        width_difference // 2
+                        + self.rect.left
+                        + self.game.selected_piece.position[1] * self.rect.width // 8,
+                        height_difference // 2
+                        + self.rect.top
+                        + self.game.selected_piece.position[0] * self.rect.height // 8,
+                    ),
+                )
+
+            # Adding a low opacity green rectangle to the valid moves
+
+            for position in self.game.piece_can_move_to:
+                valid_move_filter = pygame.Surface(
+                    (self.rect.width // 10, self.rect.height // 10)
+                )
+                valid_move_filter.set_alpha(100)
+                valid_move_filter.fill((0, 255, 0))
+                screen.blit(
+                    valid_move_filter,
+                    (
+                        width_difference // 2
+                        + self.rect.left
+                        + position[1] * self.rect.width // 8,
+                        height_difference // 2
+                        + self.rect.top
+                        + position[0] * self.rect.height // 8,
+                    ),
+                )
 
     def update(self, screen):
         self.draw(screen)
-
-    def get_pieces_from_hash(self, piece_dictionary):
-        """Gets the pieces from the hashes stored in the pickle file"""
-
-        with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
-            hash_to_piece = pickle.load(f)
-            print(hash_to_piece)
-            print(self.piece_position)
-
-            pieces = np.where(self.piece_position != 0)
-
-            for i, piece in enumerate(zip(pieces[0], pieces[1])):
-                r, c = piece
-                self.pieces[(r, c)] = piece_dictionary[
-                    hash_to_piece[self.piece_position[r][c]]
-                ].copy()
-                self.pieces[(r, c)].position = (r, c)
-                self.pieces[(r, c)].color = self.piece_alignment[r][c]
-                # When a piece is black, we rotate the movement matrix by 180 degrees to account for the fact that the board is flipped
-                if self.pieces[(r, c)].color == BLACK_PIECE:
-                    self.pieces[(r, c)].movement = np.rot90(
-                        self.pieces[(r, c)].movement, 2
-                    )
 
 
 class GameScreen:
@@ -302,6 +272,10 @@ class GameScreen:
             self.piece_position = np.load(os.path.join(os.getcwd(), "Boards", name))[
                 "piece_position"
             ]
-            self.screen.piece_alignment = self.piece_alignment
-            self.screen.piece_position = self.piece_position
-            self.screen.get_pieces_from_hash(self.piece_dictionary)
+            self.screen.game.kings = np.load(os.path.join(os.getcwd(), "Boards", name))[
+                "kings"
+            ]
+            self.screen.game.piece_alignment = self.piece_alignment
+            self.screen.game.piece_position = self.piece_position
+            self.screen.game.get_pieces_from_hash(self.piece_dictionary)
+            self.screen.game.game_over = False
