@@ -7,7 +7,7 @@ import pickle
 
 import hashlib
 
-from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, PHASE, WALK, BLACK, WHITE
+from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, WALK, BLACK, WHITE
 from UI.board_create_screen import PIECE_HEIGHT, PIECE_WIDTH, BLACK_PIECE, WHITE_PIECE
 
 
@@ -94,6 +94,7 @@ class GameLogic:
                     self.pieces[(r, c)].movement = np.rot90(
                         self.pieces[(r, c)].movement, 2
                     )
+                print(self.pieces[(r, c)].name, self.pieces[(r, c)].phased_movement)
 
         # Turning the king pieces into kings
 

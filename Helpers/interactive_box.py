@@ -25,20 +25,20 @@ class InteractiveBox:
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
 
-    def draw(self, screen):
+    def draw(self, screen, font_size=32):
         """Draws the interactive box on the screen"""
         color = self.color_active if self.active else self.color_inactive
         pygame.draw.rect(screen, color, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
-        font = pygame.font.Font(None, 32)
+        font = pygame.font.Font(None, font_size)
         text = font.render(self.text, 1, self.text_color)
         screen.blit(text, (self.rect.left + 5, self.rect.top + 5))
 
-    def update(self, screen):
+    def update(self, screen, font_size=32):
         """Updates the interactive box"""
         color = self.color_active if self.active else self.color_inactive
         pygame.draw.rect(screen, color, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 2)
-        font = pygame.font.Font(None, 32)
+        font = pygame.font.Font(None, font_size)
         text = font.render(self.text, 1, self.text_color)
         screen.blit(text, (self.rect.left + 5, self.rect.top + 5))

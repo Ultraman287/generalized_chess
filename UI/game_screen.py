@@ -249,8 +249,13 @@ class GameScreen:
                     np.load(os.path.join(os.getcwd(), "Pieces", piece))["movement"]
                 ),  # HACKY SOLUTION FOR NOW
                 piece[:-4],
+                True
+                if np.load(os.path.join(os.getcwd(), "Pieces", piece))["type_movement"][
+                    0
+                ]
+                == 1
+                else False,
             )
-
             self.pieces.append(cur_piece)
             self.piece_dictionary[cur_piece.name] = cur_piece
 

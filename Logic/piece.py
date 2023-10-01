@@ -6,11 +6,17 @@ import math
 
 import hashlib
 
-from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, PHASE, WALK, BLACK, WHITE
+from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, WALK, BLACK, WHITE
 
 
 class GamePiece:
-    def __init__(self, piece: pygame.Surface, movement: np.ndarray, name: str):
+    def __init__(
+        self,
+        piece: pygame.Surface,
+        movement: np.ndarray,
+        name: str,
+        phased_movement: bool = False,
+    ):
         self.piece = piece
         self.movement = movement
         self.name = name
@@ -21,6 +27,7 @@ class GamePiece:
         self.position = None
         self.color = None
         self.is_king = False
+        self.phased_movement = phased_movement
 
     def get_valid_moves(self, board, position, alignment):
         """Returns a list of valid moves for the piece"""
@@ -31,16 +38,44 @@ class GamePiece:
         ]
         valid_moves = []
 
-        for row in range(movement_map.shape[0]):
-            for col in range(movement_map.shape[1]):
-                if movement_map[row, col] == 15:
-                    if board[row, col] == 0:
-                        valid_moves.append((row, col))
-                    else:
-                        if alignment[row, col] != self.color:
+        if self.phased_movement:
+            for row in range(movement_map.shape[0]):
+                for col in range(movement_map.shape[1]):
+                    if movement_map[row, col] == 15:
+                        if board[row, col] == 0:
                             valid_moves.append((row, col))
+                        else:
+                            if alignment[row, col] != self.color:
+                                valid_moves.append((row, col))
+        else:
+            # This means that the pieces movement needs to be contiguous
+            # If movement isn't phased, then a breadth first search can be used to find all valid moves
+            # A better way to do this would be to just use rays in the directions the piece can move
+            directions = [
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (-1, -1),
+                (-1, 1),
+                (1, -1),
+            ]
+            for direction in directions:
+                for i in range(1, 8):
+                    row = position[0] + direction[0] * i
+                    col = position[1] + direction[1] * i
+                    if row < 0 or row > 7 or col < 0 or col > 7:
+                        break  # Out of bounds
+                    if movement_map[row, col] == 15:
+                        if board[row, col] == 0:
+                            valid_moves.append((row, col))
+                        else:
+                            if alignment[row, col] != self.color:
+                                valid_moves.append((row, col))
+                            break
 
         return valid_moves
 
     def copy(self):
-        return GamePiece(self.piece, self.movement, self.name)
+        return GamePiece(self.piece, self.movement, self.name, self.phased_movement)

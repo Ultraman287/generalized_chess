@@ -10,14 +10,14 @@ import hashlib
 BOARD_ROWS, BOARD_COLS = 8, 8
 BOX_COLOR = (217, 217, 217)
 
-BLACK, WHITE, CENTER, PHASE, WALK = 0, 255, 60, 15, 20
+BLACK, WHITE, CENTER, WALK = 0, 255, 60, 15
 
 TOTAL_EXPECTED_PIECES = 1000
 
 
 class BoxName(InteractiveBox):
     def __init__(self):
-        self.rect = pygame.Rect(381, 43, 320, 50)
+        self.rect = pygame.Rect(340, 43, 320, 50)
         self.text = "Enter Name"
         self.text_color = (0, 0, 0)
         self.active = False
@@ -43,6 +43,45 @@ class BoxName(InteractiveBox):
 
 
 box_name = BoxName()
+
+
+class BoxPhase(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(670, 43, 100, 50)
+        self.text = "Contiguous"
+        self.text2 = "Movement"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+        self.type_movement = np.array([0])
+
+    def handle_event(self, event):
+        """Handles events for the interactive box"""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = True
+                if self.type_movement == np.array([0]):
+                    self.type_movement = np.array([1])
+                    self.text = "Phased"
+                else:
+                    self.type_movement = np.array([0])
+                    self.text = "Contiguous"
+
+    def draw(self, screen):
+        super().draw(screen, 16)
+        font = pygame.font.Font(None, 16)
+        text2 = font.render(self.text2, 1, self.text_color)
+        screen.blit(text2, (self.rect.left + 5, self.rect.top + 5 + 16))
+
+    def update(self, screen):
+        super().update(screen, 16)
+        font = pygame.font.Font(None, 16)
+        text2 = font.render(self.text2, 1, self.text_color)
+        screen.blit(text2, (self.rect.left + 5, self.rect.top + 5 + 16))
+
+
+box_phase = BoxPhase()
 
 
 class BoxDrawandMove(InteractiveBox):
@@ -160,12 +199,13 @@ class BoxInput(InteractiveBox):
                     # Update the value in the current_mesh to represent the drawing
                     if self.current_mesh[col, row] != CENTER:
                         if event.button == 1:
-                            if self.current_mesh[col, row] == PHASE:
-                                self.current_mesh[col, row] = WALK
-                            else:
-                                self.current_mesh[
-                                    col, row
-                                ] = PHASE  # You can set this value based on your drawing needs
+                            self.current_mesh[col, row] = WALK
+                            # if self.current_mesh[col, row] == PHASE:
+                            #     self.current_mesh[col, row] = WALK
+                            # else:
+                            #     self.current_mesh[
+                            #         col, row
+                            #     ] = PHASE  # You can set this value based on your drawing needs
                         if event.button == 3:
                             if self.current_mesh[col, row] == BLACK:
                                 self.current_mesh[col, row] = WHITE
@@ -264,6 +304,7 @@ class MakePiece:
         self.cols = cols
         self.movement = movement
         self.drawing = drawing
+        self.type_movement = np.array([0])
         self.current_mode: str = "draw"
         self.box_name = box_name
         self.box_draw_and_move = box_draw_and_move
@@ -272,6 +313,7 @@ class MakePiece:
         self.box_input = box_input
         self.box_input_2 = box_input_2
         self.box_delete = box_delete
+        self.box_phase = box_phase
 
     def draw(self, screen):
         """Draws the make piece window"""
@@ -285,6 +327,7 @@ class MakePiece:
         else:
             self.box_input_2.draw(screen)
         self.box_delete.draw(screen)
+        self.box_phase.draw(screen)
 
     def handle_event(self, event):
         """Handles events for the make piece window"""
@@ -299,6 +342,9 @@ class MakePiece:
             self.movement = self.box_input_2.current_mesh
         self.box_save.handle_event(event, self.save)
         self.box_delete.handle_event(event)
+        self.box_phase.handle_event(event)
+
+        self.type_movement = self.box_phase.type_movement
 
         return self.box_back.handle_event(event)
 
@@ -314,6 +360,7 @@ class MakePiece:
         else:
             self.box_input_2.update(screen)
         self.box_delete.update(screen)
+        self.box_phase.update(screen)
 
     def reset(self, name: str = None):
         if name is not None:
@@ -346,7 +393,12 @@ class MakePiece:
 
         file_name = os.path.join(folder, self.box_name.text + ".npz")
 
-        np.savez(file_name, drawing=self.drawing, movement=self.movement)
+        np.savez(
+            file_name,
+            drawing=self.drawing,
+            movement=self.movement,
+            type_movement=self.type_movement,
+        )
         try:
             with open("pieces.pkl", "rb") as f:
                 pieces = pickle.load(f)
