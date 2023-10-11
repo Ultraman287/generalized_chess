@@ -24,7 +24,7 @@ class BoxBack(InteractiveBox):
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                return "board_options_screen"
+                return "game_options_screen"
 
 
 class IndividualBoard(InteractiveBox):
@@ -88,7 +88,7 @@ class IndividualBoard(InteractiveBox):
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                return "board_create_screen", self.name
+                return "game_screen", self.name
 
 
 class BoxBoards(InteractiveBox):
@@ -134,25 +134,25 @@ class BoxBoards(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             for board in self.board_objects:
                 if board.handle_event(event):
-                    return "board_create_screen", board.name
+                    return "game_screen", board.name
 
     def update(self, screen):
         self.draw(screen)
 
 
-class BoardExistingScreen:
+class GameExistingScreen:
     def __init__(self):
         self.boxes = [BoxBack(), BoxBoards()]
 
     def handle_event(self, event):
         for box in self.boxes:
             handled_event = box.handle_event(event)
-            if handled_event == "board_options_screen":
-                return "board_options_screen"
+            if handled_event == "game_options_screen":
+                return "game_options_screen"
             if (
                 handled_event
                 and type(handled_event) == tuple
-                and handled_event[0] == "board_create_screen"
+                and handled_event[0] == "game_screen"
             ):
                 return handled_event[0], handled_event[1] + ".npz"
 

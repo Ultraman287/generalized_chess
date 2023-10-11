@@ -17,6 +17,7 @@ from UI.board_existing_screen import BoardExistingScreen
 from UI.board_create_screen import BoardCreateScreen
 from UI.game_screen import GameScreen
 from UI.game_options_screen import GameOptionsScreen
+from UI.game_existing_screen import GameExistingScreen
 
 
 global CURRENT_WINDOW
@@ -40,6 +41,7 @@ windows = {
     "board_create_screen": BoardCreateScreen(),
     "game_screen": GameScreen(),
     "game_options_screen": GameOptionsScreen(),
+    "game_existing_screen": GameExistingScreen(),
 }
 
 while running:

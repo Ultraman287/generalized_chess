@@ -44,6 +44,7 @@ class IndividualPiece(InteractiveBox):
             int(hashlib.sha1(self.name.encode()).hexdigest(), 16)
             % TOTAL_EXPECTED_PIECES
         )
+        self.is_king = False
 
     def get_blit(self):
         "Turns the name and piece into a surface"
@@ -92,6 +93,16 @@ class IndividualPiece(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 return "piece_draw_screen"
+
+    def copy(self):
+        return IndividualPiece(
+            self.piece,
+            self.rect.x,
+            self.rect.y,
+            self.rect.width,
+            self.rect.height,
+            self.name,
+        )
 
 
 class SelectPiece(InteractiveBox):

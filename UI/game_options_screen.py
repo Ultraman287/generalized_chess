@@ -2,18 +2,7 @@ import pygame
 import numpy as np
 from dataclasses import dataclass
 import os
-import tkinter
-import tkinter.filedialog
 from Helpers.interactive_box import InteractiveBox
-
-
-def prompt_file():
-    """Create a Tk file dialog and cleanup when finished"""
-    top = tkinter.Tk()
-    top.withdraw()  # hide window
-    file_name = tkinter.filedialog.askopenfilename()
-    top.destroy()
-    return file_name
 
 
 class NewGame(InteractiveBox):
@@ -29,9 +18,10 @@ class NewGame(InteractiveBox):
         """Handles events for the interactive box"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                file = prompt_file()
-                if file:
-                    return "game_screen", file
+                return "game_existing_screen"
+                # file = prompt_file()
+                # if file:
+                #     return "game_screen", file
 
 
 class Continue(InteractiveBox):
@@ -46,10 +36,11 @@ class Continue(InteractiveBox):
     def handle_event(self, event):
         """Handles events for the interactive box"""
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.rect.collidepoint(event.pos):
-                file = prompt_file()
-                if file:
-                    return "game_screen", file
+            print("This hasnt been implemented yet")
+            # if self.rect.collidepoint(event.pos):
+            #     file = prompt_file()
+            #     if file:
+            #         return "game_screen", file
 
 
 class BackButton(InteractiveBox):

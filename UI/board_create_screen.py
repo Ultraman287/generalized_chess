@@ -92,7 +92,7 @@ class BoxInput(InteractiveBox):
                 ),
             )
 
-            if piece.is_king:
+            if piece.is_king == True:
                 pygame.draw.circle(
                     screen,
                     (255, 0, 0),
@@ -173,7 +173,7 @@ class BoxInput(InteractiveBox):
                 r, c = piece
                 self.pieces[(r, c)] = piece_dictionary[
                     hash_to_piece[self.piece_position_mesh[r][c]]
-                ]
+                ].copy()
 
 
 box_input = BoxInput()
