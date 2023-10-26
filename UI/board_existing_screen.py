@@ -157,7 +157,7 @@ class BoardExistingScreen:
                 return handled_event[0], handled_event[1] + ".npz"
 
     def reset(self):
-        self.boxes[1].get_all_boards()
+        self.boxes[1] = BoxBoards()
 
     def update(self, screen):
         screen.fill((198, 198, 198))
