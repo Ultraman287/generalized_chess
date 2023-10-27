@@ -15,3 +15,8 @@ Running the application
 ```Bash
 python game_ui.py
 ```
+
+Command to build
+```Bash
+python -m PyInstaller game_ui.py --onefile --noconsole
+```

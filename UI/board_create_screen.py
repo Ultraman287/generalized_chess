@@ -196,6 +196,7 @@ class BoxSelect(InteractiveBox):
         """Gets all the pieces from the Pieces folder"""
         self.pieces = []
         pieces = os.listdir(os.path.join(os.getcwd(), "Pieces"))
+
         for i, piece in enumerate(pieces):
             cur_piece = IndividualPiece(
                 pygame.surfarray.make_surface(
