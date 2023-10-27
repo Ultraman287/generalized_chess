@@ -39,6 +39,14 @@ clock = pygame.time.Clock()
 screen.fill(BACKGROUND_COLOR)
 
 
+"""
+This is a dictionary of all the windows in the game and their corresponding classes
+
+By initializing pygame here, we're offloading the separate windows to their own classes where this file will only handle
+
+the switching of windows. This is done to make the code more modular and easier to read and extend.
+"""
+
 windows = {
     "main_menu_screen": MainMenuScreen(),
     "piece_draw_screen": MakePiece(),
@@ -62,6 +70,15 @@ while running:
             running = False
         next_window = windows[CURRENT_WINDOW].handle_event(event)
         if next_window:
+            """
+            To find the next window to go to, each event handler for the window can return a string or a tuple
+
+            If the event handler returns a string, then the next window is just the string
+
+            If the event handler returns a tuple, then the first element of the tuple is the next window and the second
+
+            element is the data that needs to be passed to the next window
+            """
             if type(next_window) == tuple:
                 CURRENT_WINDOW = next_window[0]
                 screen.fill(BACKGROUND_COLOR)

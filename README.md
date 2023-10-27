@@ -11,10 +11,22 @@ Install the required libraries
 pip install -r requiremments.txt
 ```
 
+Before running the application, you must add the relevant environment variables to the directory. In this case, this would be creating a '.env' file in the root of the directory and adding the following variables:
+
+```
+OPENAI_API_KEY=<your openai api key>
+```
+
+After adding the environment variables, you can activate the virtual environment
+```Bash
+source venv/bin/activate
+```
+
 Running the application
 ```Bash
 python game_ui.py
 ```
+
 
 
 # Mac Instructions
