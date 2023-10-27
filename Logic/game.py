@@ -51,14 +51,23 @@ class GameLogic:
             past_games=past_games,
         )
 
-        next_move = llm.predict(prompt)
+        try:
+            next_move = llm.predict(prompt)
 
-        parsed_move = next_move.split("->")
+            parsed_move = next_move.split("->")
 
-        starting = parsed_move[0].strip().split("=")[1].strip()
-        row1, col1 = starting.strip("")[1], starting.strip("")[-2]
-        ending = parsed_move[1]
-        row2, col2 = ending.strip("")[1], ending.strip("")[-2]
+            starting = parsed_move[0].strip().split("=")[1].strip()
+            row1, col1 = starting.strip("")[1], starting.strip("")[-2]
+            ending = parsed_move[1]
+            row2, col2 = ending.strip("")[1], ending.strip("")[-2]
+        except:
+            next_move = possible_moves[0]
+            parsed_move = next_move.split("->")
+
+            starting = parsed_move[0].strip().split("=")[1].strip()
+            row1, col1 = starting.strip("")[1], starting.strip("")[-2]
+            ending = parsed_move[1]
+            row2, col2 = ending.strip("")[1], ending.strip("")[-2]
 
         self.handle_press(int(row1), int(col1))
         self.handle_press(int(row2), int(col2))
