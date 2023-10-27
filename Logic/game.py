@@ -12,9 +12,9 @@ from UI.board_create_screen import PIECE_HEIGHT, PIECE_WIDTH, BLACK_PIECE, WHITE
 
 
 class GameLogic:
-    def __init__(self):
-        self.piece_alignment = np.zeros((8, 8))
-        self.piece_position = np.zeros((8, 8))
+    def __init__(self, rows=8, cols=8):
+        self.piece_alignment = np.zeros((rows, cols))
+        self.piece_position = np.zeros((rows, cols))
         self.pieces = {}
         self.selected_piece = None
         self.piece_can_move_to = set()
@@ -77,8 +77,6 @@ class GameLogic:
 
         with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
             hash_to_piece = pickle.load(f)
-            print(hash_to_piece)
-            print(self.piece_position)
 
             pieces = np.where(self.piece_position != 0)
 
@@ -94,7 +92,6 @@ class GameLogic:
                     self.pieces[(r, c)].movement = np.rot90(
                         self.pieces[(r, c)].movement, 2
                     )
-                print(self.pieces[(r, c)].name, self.pieces[(r, c)].phased_movement)
 
         # Turning the king pieces into kings
 

@@ -51,6 +51,9 @@ class GamePiece:
             # This means that the pieces movement needs to be contiguous
             # If movement isn't phased, then a breadth first search can be used to find all valid moves
             # A better way to do this would be to just use rays in the directions the piece can move
+
+            rows, cols = board.shape
+
             directions = [
                 (1, 0),
                 (-1, 0),
@@ -61,11 +64,12 @@ class GamePiece:
                 (-1, 1),
                 (1, -1),
             ]
+
             for direction in directions:
                 for i in range(1, 8):
                     row = position[0] + direction[0] * i
                     col = position[1] + direction[1] * i
-                    if row < 0 or row > 7 or col < 0 or col > 7:
+                    if row < 0 or row > rows - 1 or col < 0 or col > cols - 1:
                         break  # Out of bounds
                     if movement_map[row, col] == 15:
                         if board[row, col] == 0:

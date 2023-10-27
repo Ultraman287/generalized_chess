@@ -130,12 +130,15 @@ box_rows = BoxRows()
 
 
 class BoxInput(InteractiveBox):
-    def __init__(self, mesh=np.zeros((BOARD_ROWS, BOARD_COLS))):
-        print(BOARD_COLS, BOARD_ROWS)
+    def __init__(self, mesh=None, alignment=None):
         self.rect = pygame.Rect(272, 113, 460, 460)
         self.pieces = {}
-        self.piece_position_mesh = mesh
-        self.piece_alignment_mesh = np.zeros((BOARD_ROWS, BOARD_COLS))
+        self.piece_position_mesh = (
+            mesh if mesh is not None else np.zeros((BOARD_ROWS, BOARD_COLS))
+        )
+        self.piece_alignment_mesh = (
+            alignment if alignment is not None else np.zeros((BOARD_ROWS, BOARD_COLS))
+        )
         self.chessboard = np.indices((BOARD_COLS, BOARD_ROWS)).sum(axis=0) % 2
         self.kings = []
 
@@ -244,8 +247,6 @@ class BoxInput(InteractiveBox):
 
         with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
             hash_to_piece = pickle.load(f)
-            print(hash_to_piece)
-            print(self.piece_position_mesh)
 
             pieces = np.where(self.piece_position_mesh != 0)
 
@@ -479,10 +480,11 @@ class BoardCreateScreen:
     def update(self, screen):
         """Updates the make piece window"""
         if self.old_row_col != (BOARD_ROWS, BOARD_COLS):
-            self.box_input = BoxInput()
-            self.piece_position = self.box_input.piece_position_mesh
-            self.piece_alignment = self.box_input.piece_alignment_mesh
-            self.old_row_col = (BOARD_ROWS, BOARD_COLS)
+            if self.piece_position.shape != (BOARD_ROWS, BOARD_COLS):
+                self.box_input = BoxInput()
+                self.piece_position = self.box_input.piece_position_mesh
+                self.piece_alignment = self.box_input.piece_alignment_mesh
+                self.old_row_col = (BOARD_ROWS, BOARD_COLS)
 
         self.box_name.update(screen)
         self.box_back.update(screen)
@@ -507,10 +509,19 @@ class BoardCreateScreen:
             globals()["BOARD_ROWS"], globals()["BOARD_COLS"] = np.load(
                 os.path.join(os.getcwd(), "Boards", name)
             )["row_col"]
-            self.box_input.pieces = {}
-            self.box_input.piece_position_mesh = self.piece_position
-            self.box_input.piece_alignment_mesh = self.piece_alignment
+            # self.box_input.pieces = {}
+            # self.box_input.piece_position_mesh = self.piece_position
+            # self.box_input.piece_alignment_mesh = self.piece_alignment
+            self.box_input = BoxInput(
+                mesh=self.piece_position, alignment=self.piece_alignment
+            )
             self.box_input.get_pieces_from_hash(self.box_select.piece_dictionary)
+            self.box_input.kings = [
+                (i[0], i[1])
+                for i in np.load(os.path.join(os.getcwd(), "Boards", name))["kings"]
+            ]
+            for r, c in self.box_input.kings:
+                self.box_input.pieces[(r, c)].is_king = True
             self.box_back.previous_window = "board_options_screen"
         else:
             self.box_name.text = "Enter Name"

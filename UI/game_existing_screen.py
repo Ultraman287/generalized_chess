@@ -114,6 +114,7 @@ class BoxBoards(InteractiveBox):
             display = pygame.surfarray.make_surface(
                 np.load(f"Boards/{name}.npz")["piece_position"]
             )
+            print(f"Board: {display}")
             self.board_objects.append(IndividualBoard(display, x, y, w, h, name))
 
     def get_all_boards(self):
