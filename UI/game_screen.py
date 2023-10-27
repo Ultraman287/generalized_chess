@@ -97,6 +97,12 @@ class BoxInput:
         self.chessboard = np.indices((row, col)).sum(axis=0) % 2
         self.game = GameLogic(rows=row, cols=col)
         self.rows, self.cols = row, col
+        self.name = None
+        self.written = False
+        self.ai_mode = False
+        self.ai_move = False
+        self.text = ""
+        self.cur_length = 0
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -109,10 +115,38 @@ class BoxInput:
 
                 print(f"row: {row}, col: {col}")
 
-                self.game.handle_press(row, col)
+                if not self.ai_move:
+                    self.game.handle_press(row, col)
+                    if len(self.game.game_history) > self.cur_length and self.ai_mode:
+                        self.ai_move = True
+                        if self.game.game_over == False:
+                            self.game.ai_move()
+                        self.ai_move = False
+                    self.cur_length = len(self.game.game_history)
 
     def draw(self, screen):
         if self.game.game_over:
+            # Appending the history of the game to a file
+
+            if not os.path.exists(os.path.join(os.getcwd(), "Histories")):
+                os.mkdir(os.path.join(os.getcwd(), "Histories"))
+
+            if not self.written:
+                if not os.path.exists(
+                    os.path.join(os.getcwd(), "Histories", f"{self.name}.txt")
+                ):
+                    with open(
+                        os.path.join(os.getcwd(), "Histories", f"{self.name}.txt"), "w"
+                    ) as f:
+                        f.write("\n".join(self.game.game_history))
+                else:
+                    with open(
+                        os.path.join(os.getcwd(), "Histories", f"{self.name}.txt"), "a"
+                    ) as f:
+                        f.write("\n".join(self.game.game_history))
+                        f.write("\n")
+                self.written = True
+
             font = pygame.font.SysFont("Arial", 40)
             text = font.render(
                 f"Game Over! {self.game.winner} wins!", True, (255, 255, 255)
@@ -234,14 +268,32 @@ class BoxInput:
         self.draw(screen)
 
 
+class BoxAIMode(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(57, 529, 146, 58)
+        self.text = "Human Mode"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.text = "Human Mode" if self.text == "AI Mode" else "AI Mode"
+                return "change"
+
+
 class GameScreen:
     def __init__(self):
+        self.name = None
         self.back = BoxBack()
         self.mode = BoxMode()
         self.undo = BoxUndo()
         self.redo = BoxRedo()
         self.save = BoxSave()
         self.screen = BoxInput()
+        self.ai_mode = BoxAIMode()
         self.boxes = [
             self.back,
             self.mode,
@@ -249,6 +301,7 @@ class GameScreen:
             self.redo,
             self.save,
             self.screen,
+            self.ai_mode,
         ]
         self.piece_alignment = np.zeros((8, 8))
         self.piece_position = np.zeros((8, 8))
@@ -280,6 +333,10 @@ class GameScreen:
 
     def handle_event(self, event):
         for box in self.boxes:
+            if box.text == "AI Mode" or box.text == "Human Mode":
+                if box.handle_event(event) == "change":
+                    self.boxes[5].ai_mode = not self.boxes[5].ai_mode
+                    continue
             next_window = box.handle_event(event)
             if next_window:
                 return next_window
@@ -306,6 +363,10 @@ class GameScreen:
                 for i in np.load(os.path.join(os.getcwd(), "Boards", name))["kings"]
             )
             self.boxes[5].game.piece_alignment = self.piece_alignment
+            self.boxes[5].game.initial_piece_alignment = self.piece_alignment
             self.boxes[5].game.piece_position = self.piece_position
+            self.boxes[5].game.initial_piece_position = self.piece_position
             self.boxes[5].game.get_pieces_from_hash(self.piece_dictionary)
             self.boxes[5].game.game_over = False
+            self.boxes[5].name = name
+            self.boxes[5].game.name = name

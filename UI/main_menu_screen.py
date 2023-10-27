@@ -53,10 +53,10 @@ class CreateCustomPiece(InteractiveBox):
                 return "piece_select_screen"
 
 
-class CustomizeUI(InteractiveBox):
+class AITools(InteractiveBox):
     def __init__(self):
         self.rect = pygame.Rect(207, 417, 386, 58)
-        self.text = "Customize UI"
+        self.text = "AI Tools"
         self.text_color = (0, 0, 0)
         self.active = False
         self.color_active = (250, 220, 220)
@@ -65,7 +65,7 @@ class CustomizeUI(InteractiveBox):
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                return "customize_ui_screen"
+                return "ai_tools_screen"
 
 
 class MainMenuScreen:
@@ -73,16 +73,14 @@ class MainMenuScreen:
         self.custom_piece_button = CreateCustomPiece()
         self.custom_board_button = CreateCustomBoard()
         self.play_chess_button = PlayChess()
-        self.customize_ui_button = CustomizeUI()
+        self.ai_tools_button = AITools()
 
     def handle_event(self, event):
-        # self.new_piece_button.handle_event(event)
-        # self.edit_piece_button.handle_event(event)
         return (
             self.custom_piece_button.handle_event(event)
             or self.custom_board_button.handle_event(event)
             or self.play_chess_button.handle_event(event)
-            or self.customize_ui_button.handle_event(event)
+            or self.ai_tools_button.handle_event(event)
         )
 
     def reset(self):
@@ -93,5 +91,5 @@ class MainMenuScreen:
         self.custom_piece_button.draw(screen)
         self.custom_board_button.draw(screen)
         self.play_chess_button.draw(screen)
-        self.customize_ui_button.draw(screen)
+        self.ai_tools_button.draw(screen)
         pygame.display.flip()

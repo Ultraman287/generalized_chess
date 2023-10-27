@@ -1,0 +1,2 @@
+class AIPlayScreen:
+    pass
