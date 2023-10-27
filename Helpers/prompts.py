@@ -4,6 +4,7 @@ from UI.board_create_screen import PIECE_HEIGHT, PIECE_WIDTH, BLACK_PIECE, WHITE
 def get_next_move_prompt(
     init_piece_position, init_piece_alignment, game_history, possible_moves, past_games
 ):
+    """Returns a string that is used to prompt the AI to make a move"""
     piece_array = [
         ["" for _ in range(init_piece_position.shape[1])]
         for _ in range(init_piece_position.shape[0])

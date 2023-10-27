@@ -13,6 +13,7 @@ from langchain.chat_models import ChatOpenAI
 from Helpers.prompts import get_next_move_prompt
 import asyncio
 
+# Initializing the llm model with the openai api key stored in the .env file
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
 
 
@@ -33,7 +34,7 @@ class GameLogic:
         self.name = None
 
     def ai_move(self):
-        """AI move"""
+        """Gets the next move from the ai and handles it by calling the handle_press function with the correct parameters"""
         possible_moves = self.get_all_possible_moves()
         if os.path.exists(os.path.join(os.getcwd(), "Histories", f"{self.name}.txt")):
             with open(
@@ -50,7 +51,6 @@ class GameLogic:
             past_games=past_games,
         )
 
-        print(prompt)
         next_move = llm.predict(prompt)
 
         parsed_move = next_move.split("->")
@@ -64,6 +64,14 @@ class GameLogic:
         self.handle_press(int(row2), int(col2))
 
     def handle_press(self, row, col):
+        """Handles the press of a piece on the board
+
+        If there is no piece selected, then it selects the piece
+
+        If there is a piece selected, then it checks if the piece can move to the selected position
+
+        If it can, then it moves the piece to the selected position"""
+
         mesh_size = self.piece_position.shape[0]
         if 0 <= row < mesh_size and 0 <= col < mesh_size:
             print(f"piece: {self.pieces.get((row, col), None)}")
