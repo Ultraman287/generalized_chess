@@ -92,10 +92,17 @@ class BoxSave(InteractiveBox):
 
 
 class BoxInput:
-    def __init__(self):
+    def __init__(self, row=8, col=8):
         self.rect = pygame.Rect(259, 79, 460, 460)
-        self.chessboard = np.indices((8, 8)).sum(axis=0) % 2
-        self.game = GameLogic()
+        self.chessboard = np.indices((row, col)).sum(axis=0) % 2
+        self.game = GameLogic(rows=row, cols=col)
+        self.rows, self.cols = row, col
+        self.name = None
+        self.written = False
+        self.ai_mode = False
+        self.ai_move = False
+        self.text = ""
+        self.cur_length = 0
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -108,10 +115,38 @@ class BoxInput:
 
                 print(f"row: {row}, col: {col}")
 
-                self.game.handle_press(row, col)
+                if not self.ai_move:
+                    self.game.handle_press(row, col)
+                    if len(self.game.game_history) > self.cur_length and self.ai_mode:
+                        self.ai_move = True
+                        if self.game.game_over == False:
+                            self.game.ai_move()
+                        self.ai_move = False
+                    self.cur_length = len(self.game.game_history)
 
     def draw(self, screen):
         if self.game.game_over:
+            # Appending the history of the game to a file
+
+            if not os.path.exists(os.path.join(os.getcwd(), "Histories")):
+                os.mkdir(os.path.join(os.getcwd(), "Histories"))
+
+            if not self.written:
+                if not os.path.exists(
+                    os.path.join(os.getcwd(), "Histories", f"{self.name}.txt")
+                ):
+                    with open(
+                        os.path.join(os.getcwd(), "Histories", f"{self.name}.txt"), "w"
+                    ) as f:
+                        f.write("\n".join(self.game.game_history))
+                else:
+                    with open(
+                        os.path.join(os.getcwd(), "Histories", f"{self.name}.txt"), "a"
+                    ) as f:
+                        f.write("\n".join(self.game.game_history))
+                        f.write("\n")
+                self.written = True
+
             font = pygame.font.SysFont("Arial", 40)
             text = font.render(
                 f"Game Over! {self.game.winner} wins!", True, (255, 255, 255)
@@ -132,12 +167,20 @@ class BoxInput:
 
             pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
 
-            width_difference = self.rect.width // 8 - self.rect.width // 10
-            height_difference = self.rect.height // 8 - self.rect.height // 10
+            width_difference = self.rect.width // self.cols - self.rect.width // int(
+                self.cols * 1.2
+            )
+            height_difference = self.rect.height // self.rows - self.rect.height // int(
+                self.rows * 1.2
+            )
 
             for position, piece in self.game.pieces.items():
                 surf = pygame.transform.scale(
-                    piece.piece, (self.rect.width // 10, self.rect.height // 10)
+                    piece.piece,
+                    (
+                        self.rect.width // int(self.cols * 1.2),
+                        self.rect.height // int(self.rows * 1.2),
+                    ),
                 )
                 if self.game.piece_alignment[position[0]][position[1]] == BLACK_PIECE:
                     surf = pygame.transform.flip(surf, True, True)
@@ -147,10 +190,10 @@ class BoxInput:
                     (
                         width_difference // 2
                         + self.rect.left
-                        + position[1] * self.rect.width // 8,
+                        + position[1] * self.rect.width // self.cols,
                         height_difference // 2
                         + self.rect.top
-                        + position[0] * self.rect.height // 8,
+                        + position[0] * self.rect.height // self.rows,
                     ),
                 )
 
@@ -161,12 +204,12 @@ class BoxInput:
                         (
                             width_difference // 2
                             + self.rect.left
-                            + position[1] * self.rect.width // 8
-                            + self.rect.width // 16,
+                            + position[1] * self.rect.width // self.cols
+                            + self.rect.width // (self.cols * 2),
                             height_difference // 2
                             + self.rect.top
-                            + position[0] * self.rect.height // 8
-                            + self.rect.height // 16,
+                            + position[0] * self.rect.height // self.rows
+                            + self.rect.height // (self.rows * 2),
                         ),
                         self.rect.width // 80,
                     )
@@ -175,7 +218,10 @@ class BoxInput:
 
             if self.game.selected_piece is not None:
                 selected_filter = pygame.Surface(
-                    (self.rect.width // 10, self.rect.height // 10)
+                    (
+                        self.rect.width // int(self.cols * 1.2),
+                        self.rect.height // int(self.rows * 1.2),
+                    )
                 )
                 selected_filter.set_alpha(100)
                 selected_filter.fill((255, 255, 255))
@@ -184,10 +230,14 @@ class BoxInput:
                     (
                         width_difference // 2
                         + self.rect.left
-                        + self.game.selected_piece.position[1] * self.rect.width // 8,
+                        + self.game.selected_piece.position[1]
+                        * self.rect.width
+                        // self.cols,
                         height_difference // 2
                         + self.rect.top
-                        + self.game.selected_piece.position[0] * self.rect.height // 8,
+                        + self.game.selected_piece.position[0]
+                        * self.rect.height
+                        // self.rows,
                     ),
                 )
 
@@ -195,7 +245,10 @@ class BoxInput:
 
             for position in self.game.piece_can_move_to:
                 valid_move_filter = pygame.Surface(
-                    (self.rect.width // 10, self.rect.height // 10)
+                    (
+                        self.rect.width // int(self.cols * 1.2),
+                        self.rect.height // int(self.rows * 1.2),
+                    )
                 )
                 valid_move_filter.set_alpha(100)
                 valid_move_filter.fill((0, 255, 0))
@@ -204,10 +257,10 @@ class BoxInput:
                     (
                         width_difference // 2
                         + self.rect.left
-                        + position[1] * self.rect.width // 8,
+                        + position[1] * self.rect.width // self.cols,
                         height_difference // 2
                         + self.rect.top
-                        + position[0] * self.rect.height // 8,
+                        + position[0] * self.rect.height // self.rows,
                     ),
                 )
 
@@ -215,14 +268,32 @@ class BoxInput:
         self.draw(screen)
 
 
+class BoxAIMode(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(57, 529, 146, 58)
+        self.text = "Human Mode"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.text = "Human Mode" if self.text == "AI Mode" else "AI Mode"
+                return "change"
+
+
 class GameScreen:
     def __init__(self):
+        self.name = None
         self.back = BoxBack()
         self.mode = BoxMode()
         self.undo = BoxUndo()
         self.redo = BoxRedo()
         self.save = BoxSave()
         self.screen = BoxInput()
+        self.ai_mode = BoxAIMode()
         self.boxes = [
             self.back,
             self.mode,
@@ -230,6 +301,7 @@ class GameScreen:
             self.redo,
             self.save,
             self.screen,
+            self.ai_mode,
         ]
         self.piece_alignment = np.zeros((8, 8))
         self.piece_position = np.zeros((8, 8))
@@ -261,6 +333,10 @@ class GameScreen:
 
     def handle_event(self, event):
         for box in self.boxes:
+            if box.text == "AI Mode" or box.text == "Human Mode":
+                if box.handle_event(event) == "change":
+                    self.boxes[5].ai_mode = not self.boxes[5].ai_mode
+                    continue
             next_window = box.handle_event(event)
             if next_window:
                 return next_window
@@ -277,10 +353,20 @@ class GameScreen:
             self.piece_position = np.load(os.path.join(os.getcwd(), "Boards", name))[
                 "piece_position"
             ]
-            self.screen.game.kings = np.load(os.path.join(os.getcwd(), "Boards", name))[
-                "kings"
-            ]
-            self.screen.game.piece_alignment = self.piece_alignment
-            self.screen.game.piece_position = self.piece_position
-            self.screen.game.get_pieces_from_hash(self.piece_dictionary)
-            self.screen.game.game_over = False
+
+            # print(self.boxes[5].game.kings)
+            print(np.load(os.path.join(os.getcwd(), "Boards", name))["kings"])
+            rows, cols = np.load(os.path.join(os.getcwd(), "Boards", name))["row_col"]
+            self.boxes[5] = BoxInput(rows, cols)
+            self.boxes[5].game.kings = (
+                (i[0], i[1])
+                for i in np.load(os.path.join(os.getcwd(), "Boards", name))["kings"]
+            )
+            self.boxes[5].game.piece_alignment = self.piece_alignment
+            self.boxes[5].game.initial_piece_alignment = self.piece_alignment
+            self.boxes[5].game.piece_position = self.piece_position
+            self.boxes[5].game.initial_piece_position = self.piece_position
+            self.boxes[5].game.get_pieces_from_hash(self.piece_dictionary)
+            self.boxes[5].game.game_over = False
+            self.boxes[5].name = name
+            self.boxes[5].game.name = name

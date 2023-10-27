@@ -31,8 +31,19 @@ class InteractiveBox:
         pygame.draw.rect(screen, color, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
         font = pygame.font.Font(None, font_size)
-        text = font.render(self.text, 1, self.text_color)
-        screen.blit(text, (self.rect.left + 5, self.rect.top + 5))
+        if type(self.text) == list:
+            for i, text in enumerate(self.text):
+                text = font.render(text, 1, self.text_color)
+                screen.blit(
+                    text,
+                    (
+                        self.rect.left + 5,
+                        self.rect.top + 5 + i * (font_size + 5),
+                    ),
+                )
+        else:
+            text = font.render(self.text, 1, self.text_color)
+            screen.blit(text, (self.rect.left + 5, self.rect.top + 5))
 
     def update(self, screen, font_size=32):
         """Updates the interactive box"""

@@ -3,8 +3,13 @@ import thorpy
 import os
 import sys
 
-
 import hashlib
+
+with open(".env", "r") as f:
+    for line in f:
+        key, value = line.split("=")
+        os.environ[key.strip()] = value.strip()
+
 
 pygame.init()
 
@@ -18,6 +23,9 @@ from UI.board_create_screen import BoardCreateScreen
 from UI.game_screen import GameScreen
 from UI.game_options_screen import GameOptionsScreen
 from UI.game_existing_screen import GameExistingScreen
+from UI.ai_tools_screen import AIToolsScreen
+from UI.ai_train_screen import AITrainScreen
+from UI.ai_play_screen import AIPlayScreen
 
 
 global CURRENT_WINDOW
@@ -31,6 +39,14 @@ clock = pygame.time.Clock()
 screen.fill(BACKGROUND_COLOR)
 
 
+"""
+This is a dictionary of all the windows in the game and their corresponding classes
+
+By initializing pygame here, we're offloading the separate windows to their own classes where this file will only handle
+
+the switching of windows. This is done to make the code more modular and easier to read and extend.
+"""
+
 windows = {
     "main_menu_screen": MainMenuScreen(),
     "piece_draw_screen": MakePiece(),
@@ -42,6 +58,9 @@ windows = {
     "game_screen": GameScreen(),
     "game_options_screen": GameOptionsScreen(),
     "game_existing_screen": GameExistingScreen(),
+    "ai_tools_screen": AIToolsScreen(),
+    "ai_train_screen": AITrainScreen(),
+    "ai_play_screen": AIPlayScreen(),
 }
 
 while running:
@@ -51,6 +70,15 @@ while running:
             running = False
         next_window = windows[CURRENT_WINDOW].handle_event(event)
         if next_window:
+            """
+            To find the next window to go to, each event handler for the window can return a string or a tuple
+
+            If the event handler returns a string, then the next window is just the string
+
+            If the event handler returns a tuple, then the first element of the tuple is the next window and the second
+
+            element is the data that needs to be passed to the next window
+            """
             if type(next_window) == tuple:
                 CURRENT_WINDOW = next_window[0]
                 screen.fill(BACKGROUND_COLOR)

@@ -22,7 +22,7 @@ WHITE_PIECE = 2
 
 class BoxName(InteractiveBox):
     def __init__(self):
-        self.rect = pygame.Rect(381, 35, 351, 50)
+        self.rect = pygame.Rect(381, 35, 270, 50)
         self.text = "Enter Name"
         self.text_color = (0, 0, 0)
         self.active = False
@@ -50,13 +50,96 @@ class BoxName(InteractiveBox):
 box_name = BoxName()
 
 
+class BoxCols(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(655, 35, 50, 25)
+        self.text = "Cols"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event):
+        """Handles events for the interactive box"""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = True
+
+        elif event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    self.active = False
+                    if self.text.isdigit():
+                        globals()["BOARD_COLS"] = int(self.text)
+                    # BOARD_COLS = int(self.text)
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    if self.text == "Cols":
+                        self.text = ""
+                    self.text += event.unicode
+
+    def draw(self, screen, font_size=18):
+        return super().draw(screen, font_size)
+
+    def update(self, screen, font_size=18):
+        return super().update(screen, font_size)
+
+
+box_cols = BoxCols()
+
+
+class BoxRows(InteractiveBox):
+    def __init__(self):
+        self.rect = pygame.Rect(655, 60, 50, 25)
+        self.text = "Rows"
+        self.text_color = (0, 0, 0)
+        self.active = False
+        self.color_active = (250, 220, 220)
+        self.color_inactive = BOX_COLOR
+
+    def handle_event(self, event):
+        """Handles events for the interactive box"""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = True
+
+        elif event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    self.active = False
+                    if self.text.isdigit():
+                        globals()["BOARD_ROWS"] = int(self.text)
+                    # BOARD_ROWS = int(self.text)
+
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    if self.text == "Rows":
+                        self.text = ""
+                    self.text += event.unicode
+
+    def draw(self, screen, font_size=18):
+        return super().draw(screen, font_size)
+
+    def update(self, screen, font_size=18):
+        return super().update(screen, font_size)
+
+
+box_rows = BoxRows()
+
+
 class BoxInput(InteractiveBox):
-    def __init__(self, mesh=np.zeros((8, 8))):
+    def __init__(self, mesh=None, alignment=None):
         self.rect = pygame.Rect(272, 113, 460, 460)
         self.pieces = {}
-        self.piece_position_mesh = mesh
-        self.piece_alignment_mesh = np.zeros((8, 8))
-        self.chessboard = np.indices((8, 8)).sum(axis=0) % 2
+        self.piece_position_mesh = (
+            mesh if mesh is not None else np.zeros((BOARD_ROWS, BOARD_COLS))
+        )
+        self.piece_alignment_mesh = (
+            alignment if alignment is not None else np.zeros((BOARD_ROWS, BOARD_COLS))
+        )
+        self.chessboard = np.indices((BOARD_COLS, BOARD_ROWS)).sum(axis=0) % 2
         self.kings = []
 
     def draw(self, screen):
@@ -70,8 +153,8 @@ class BoxInput(InteractiveBox):
 
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
 
-        width_difference = self.rect.width // 8 - self.rect.width // 10
-        height_difference = self.rect.height // 8 - self.rect.height // 10
+        width_difference = self.rect.width // BOARD_COLS - self.rect.width // 10
+        height_difference = self.rect.height // BOARD_ROWS - self.rect.height // 10
 
         for position, piece in self.pieces.items():
             surf = pygame.transform.scale(
@@ -85,10 +168,10 @@ class BoxInput(InteractiveBox):
                 (
                     width_difference // 2
                     + self.rect.left
-                    + position[1] * self.rect.width // 8,
+                    + position[1] * self.rect.width // BOARD_COLS,
                     height_difference // 2
                     + self.rect.top
-                    + position[0] * self.rect.height // 8,
+                    + position[0] * self.rect.height // BOARD_ROWS,
                 ),
             )
 
@@ -99,11 +182,11 @@ class BoxInput(InteractiveBox):
                     (
                         width_difference // 2
                         + self.rect.left
-                        + position[1] * self.rect.width // 8
+                        + position[1] * self.rect.width // BOARD_COLS
                         + self.rect.width // 16,
                         height_difference // 2
                         + self.rect.top
-                        + position[0] * self.rect.height // 8
+                        + position[0] * self.rect.height // BOARD_ROWS
                         + self.rect.height // 16,
                     ),
                     self.rect.width // 80,
@@ -120,12 +203,12 @@ class BoxInput(InteractiveBox):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
                     # Calculate the row and column indices corresponding to the mouse click
-                    mesh_size = self.piece_position_mesh.shape[0]
-                    x, y = event.pos
-                    row = (y - self.rect.top) // -(-self.rect.height // mesh_size)
-                    col = (x - self.rect.left) // -(-self.rect.width // mesh_size)
 
-                    if 0 <= row < mesh_size and 0 <= col < mesh_size:
+                    x, y = event.pos
+                    row = (y - self.rect.top) // -(-self.rect.height // BOARD_ROWS)
+                    col = (x - self.rect.left) // -(-self.rect.width // BOARD_COLS)
+
+                    if 0 <= row < BOARD_ROWS and 0 <= col < BOARD_COLS:
                         if event.button == 1:
                             if (
                                 self.piece_position_mesh[row][col] != 0
@@ -164,8 +247,6 @@ class BoxInput(InteractiveBox):
 
         with open(os.path.join(os.getcwd(), "pieces.pkl"), "rb") as f:
             hash_to_piece = pickle.load(f)
-            print(hash_to_piece)
-            print(self.piece_position_mesh)
 
             pieces = np.where(self.piece_position_mesh != 0)
 
@@ -343,13 +424,13 @@ box_currently_selected = BoxCurrentlySelected()
 class BoardCreateScreen:
     def __init__(
         self,
-        rows: int = 8,
-        cols: int = 8,
+        rows: int = BOARD_ROWS,
+        cols: int = BOARD_COLS,
     ):
         self.rows = rows
         self.cols = cols
-        self.piece_alignment = np.zeros((8, 8))
-        self.piece_position_mesh = np.zeros((8, 8))
+        self.piece_alignment = np.zeros((BOARD_ROWS, BOARD_COLS))
+        self.piece_position_mesh = np.zeros((BOARD_ROWS, BOARD_COLS))
         self.current_mode: str = "draw"
         self.box_name = box_name
         self.selected_piece = None
@@ -359,6 +440,9 @@ class BoardCreateScreen:
         self.box_delete = box_delete
         self.box_select = box_select
         self.box_currently_selected = box_currently_selected
+        self.box_rows = box_rows
+        self.box_cols = box_cols
+        self.old_row_col = (BOARD_ROWS, BOARD_COLS)
 
     def draw(self, screen):
         """Draws the make piece window"""
@@ -370,6 +454,8 @@ class BoardCreateScreen:
         self.box_delete.draw(screen)
         self.box_select.draw(screen)
         self.box_currently_selected.draw(screen)
+        self.box_rows.draw(screen)
+        self.box_cols.draw(screen)
 
     def handle_event(self, event):
         """Handles events for the make piece window"""
@@ -378,6 +464,8 @@ class BoardCreateScreen:
         self.box_save.handle_event(event, self.save)
         self.box_delete.handle_event(event)
         self.box_select.handle_event(event)
+        self.box_rows.handle_event(event)
+        self.box_cols.handle_event(event)
 
         selection = self.box_select.handle_event(event)
         if selection is not None:
@@ -392,6 +480,12 @@ class BoardCreateScreen:
 
     def update(self, screen):
         """Updates the make piece window"""
+        if self.old_row_col != (BOARD_ROWS, BOARD_COLS):
+            if self.piece_position.shape != (BOARD_ROWS, BOARD_COLS):
+                self.box_input = BoxInput()
+                self.piece_position = self.box_input.piece_position_mesh
+                self.piece_alignment = self.box_input.piece_alignment_mesh
+                self.old_row_col = (BOARD_ROWS, BOARD_COLS)
 
         self.box_name.update(screen)
         self.box_back.update(screen)
@@ -400,6 +494,8 @@ class BoardCreateScreen:
         self.box_delete.update(screen)
         self.box_select.update(screen)
         self.box_currently_selected.update(screen)
+        self.box_rows.update(screen)
+        self.box_cols.update(screen)
 
     def reset(self, name: str = None):
         if name is not None:
@@ -411,15 +507,27 @@ class BoardCreateScreen:
             self.piece_position = np.load(os.path.join(os.getcwd(), "Boards", name))[
                 "piece_position"
             ]
-            self.box_input.pieces = {}
-            self.box_input.piece_position_mesh = self.piece_position
-            self.box_input.piece_alignment_mesh = self.piece_alignment
+            globals()["BOARD_ROWS"], globals()["BOARD_COLS"] = np.load(
+                os.path.join(os.getcwd(), "Boards", name)
+            )["row_col"]
+            # self.box_input.pieces = {}
+            # self.box_input.piece_position_mesh = self.piece_position
+            # self.box_input.piece_alignment_mesh = self.piece_alignment
+            self.box_input = BoxInput(
+                mesh=self.piece_position, alignment=self.piece_alignment
+            )
             self.box_input.get_pieces_from_hash(self.box_select.piece_dictionary)
+            self.box_input.kings = [
+                (i[0], i[1])
+                for i in np.load(os.path.join(os.getcwd(), "Boards", name))["kings"]
+            ]
+            for r, c in self.box_input.kings:
+                self.box_input.pieces[(r, c)].is_king = True
             self.box_back.previous_window = "board_options_screen"
         else:
             self.box_name.text = "Enter Name"
-            self.piece_position = np.zeros((8, 8))
-            self.piece_alignment = np.zeros((8, 8))
+            self.piece_position = np.zeros((BOARD_ROWS, BOARD_COLS))
+            self.piece_alignment = np.zeros((BOARD_ROWS, BOARD_COLS))
             self.box_input.pieces = {}
             self.box_input.piece_position_mesh = self.piece_position
             self.box_input.piece_alignment_mesh = self.piece_alignment
@@ -439,4 +547,5 @@ class BoardCreateScreen:
             piece_alignment=self.piece_alignment,
             piece_position=self.piece_position,
             kings=self.box_input.kings,
+            row_col=[BOARD_ROWS, BOARD_COLS],
         )
