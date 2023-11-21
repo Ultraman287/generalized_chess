@@ -57,3 +57,19 @@ python3 game_ui.py
 ```
 replace python3 with python or py if it's not working
 
+
+# Game Tutorial
+
+## Game Setup
+
+Making a piece
+
+<img src='./tutorials/Tutorial_new_piece.gif'>
+
+Making a board
+
+<img src='./tutorials/Tutorial_new_board.gif'>
+
+To play the game
+
+<img src='./tutorials/Tutorial_play_game.gif'>
