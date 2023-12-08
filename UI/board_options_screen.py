@@ -57,12 +57,30 @@ class BackButton(InteractiveBox):
 
 
 class BoardOptionsScreen:
+    """
+    Represents the screen for board options.
+
+    Attributes:
+        new_board_button (CreateNewBoard): The button for creating a new board.
+        edit_board_button (EditExistingBoard): The button for editing an existing board.
+        back_button (BackButton): The button for going back to the previous screen.
+    """
+
     def __init__(self) -> None:
         self.new_board_button = CreateNewBoard()
         self.edit_board_button = EditExistingBoard()
         self.back_button = BackButton()
 
     def handle_event(self, event):
+        """
+        Handles the given event.
+
+        Args:
+            event: The event to handle.
+
+        Returns:
+            The selected button if a button is selected, otherwise None.
+        """
         selected = self.edit_board_button.handle_event(event)
         if selected:
             return selected
@@ -72,9 +90,18 @@ class BoardOptionsScreen:
         ) or self.back_button.handle_event(event)
 
     def reset(self):
+        """
+        Resets the screen.
+        """
         pass
 
     def update(self, screen):
+        """
+        Updates the screen.
+
+        Args:
+            screen: The screen to update.
+        """
         screen.fill((198, 198, 198))
         self.new_board_button.draw(screen)
         self.edit_board_button.draw(screen)

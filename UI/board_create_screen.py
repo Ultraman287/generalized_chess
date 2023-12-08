@@ -19,8 +19,40 @@ PIECE_WIDTH = 140
 BLACK_PIECE = 1
 WHITE_PIECE = 2
 
+"""
+This is the Board creation screen that has the following UI elements:
+    - Name box
+    - Save button
+    - Delete button
+    - Back button
+    - Input box
+    - Select box
+    - Currently selected box
+    - Rows box
+    - Cols box
+    
+    
+    This screen is used to create a new board or edit an existing board. You can scroll through the different pieces saved within the database 
+    and place them on the board. You can also flip the pieces by clicking on them. You can also delete pieces by right clicking on them.
+"""
+
 
 class BoxName(InteractiveBox):
+    """
+    This is the box that allows the user to enter the name of the board
+
+    Attributes:
+        rect (pygame.Rect): The rectangular area of the box
+        text (str): The current text entered in the box
+        text_color (tuple): The color of the text
+        active (bool): Indicates if the box is currently active (being edited)
+        color_active (tuple): The color of the box when active
+        color_inactive (tuple): The color of the box when inactive
+
+    Methods:
+        handle_event(event): Handles events for the interactive box
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(381, 35, 270, 50)
         self.text = "Enter Name"
@@ -51,6 +83,18 @@ box_name = BoxName()
 
 
 class BoxCols(InteractiveBox):
+    """
+    Represents a box for entering the number of columns on the chess board.
+
+    Attributes:
+    - rect: A pygame.Rect object representing the position and size of the box.
+    - text: A string representing the text displayed in the box.
+    - text_color: A tuple representing the RGB color value of the text.
+    - active: A boolean indicating whether the box is currently active or not.
+    - color_active: A tuple representing the RGB color value of the box when active.
+    - color_inactive: A tuple representing the RGB color value of the box when inactive.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(655, 35, 50, 25)
         self.text = "Cols"
@@ -90,6 +134,23 @@ box_cols = BoxCols()
 
 
 class BoxRows(InteractiveBox):
+    """
+    Represents a box for entering the number of rows on the chess board.
+
+    Attributes:
+    - rect: pygame.Rect object representing the position and size of the box
+    - text: string representing the text displayed in the box
+    - text_color: tuple representing the RGB color value of the text
+    - active: boolean indicating whether the box is currently active or not
+    - color_active: tuple representing the RGB color value of the box when active
+    - color_inactive: tuple representing the RGB color value of the box when inactive
+
+    Methods:
+    - handle_event(event): handles events for the interactive box
+    - draw(screen, font_size): draws the box on the screen with the specified font size
+    - update(screen, font_size): updates the box on the screen with the specified font size
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(655, 60, 50, 25)
         self.text = "Rows"
@@ -131,6 +192,13 @@ box_rows = BoxRows()
 
 class BoxInput(InteractiveBox):
     def __init__(self, mesh=None, alignment=None):
+        """
+        Initializes the BoardCreateScreen object.
+
+        Args:
+            mesh (numpy.ndarray, optional): The piece position mesh. Defaults to None.
+            alignment (numpy.ndarray, optional): The piece alignment mesh. Defaults to None.
+        """
         self.rect = pygame.Rect(272, 113, 460, 460)
         self.pieces = {}
         self.piece_position_mesh = (
@@ -261,6 +329,28 @@ box_input = BoxInput()
 
 
 class BoxSelect(InteractiveBox):
+    """
+    A class representing a box for selecting pieces in a chess game.
+
+    Attributes:
+    - rect: A pygame.Rect object representing the dimensions and position of the box.
+    - text: A string representing the text inside the box.
+    - text_color: A tuple representing the RGB color value of the text.
+    - active: A boolean indicating whether the box is currently active or not.
+    - color_active: A tuple representing the RGB color value of the box when active.
+    - color_inactive: A tuple representing the RGB color value of the box when inactive.
+    - y_offset: An integer representing the vertical offset of the pieces inside the box.
+    - pieces: A list of IndividualPiece objects representing the available pieces.
+    - piece_dictionary: A dictionary mapping piece names to IndividualPiece objects.
+    - pieces_surface: A pygame.Surface object representing the surface containing the pieces.
+
+    Methods:
+    - get_all_pieces(): Gets all the pieces from the Pieces folder.
+    - handle_event(event): Handles the events related to the box.
+    - draw(screen): Draws the box and the pieces on the screen.
+    - update(screen): Updates the box and the pieces on the screen.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(67, 113, 165, 460)
         self.text = ""
@@ -333,6 +423,18 @@ box_select = BoxSelect()
 
 
 class BoxSave(InteractiveBox):
+    """
+    A class representing a save button box.
+
+    Attributes:
+    - rect: A pygame.Rect object representing the position and size of the box.
+    - text: A string representing the text displayed on the box.
+    - text_color: A tuple representing the RGB color value of the text.
+    - active: A boolean indicating whether the box is currently active.
+    - color_active: A tuple representing the RGB color value of the box when active.
+    - color_inactive: A tuple representing the RGB color value of the box when inactive.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(163, 35, 93, 50)
         self.text = "Save"
@@ -342,6 +444,16 @@ class BoxSave(InteractiveBox):
         self.color_inactive = BOX_COLOR
 
     def handle_event(self, event, function=None):
+        """
+        Handles the event triggered by the user.
+
+        Parameters:
+        - event: A pygame event object representing the event triggered by the user.
+        - function: An optional function to be called when the box is clicked.
+
+        Returns:
+        - None
+        """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.active = True
@@ -355,6 +467,22 @@ box_save = BoxSave()
 
 
 class BoxBack(InteractiveBox):
+    """
+    Represents a back button on the board create screen.
+
+    Attributes:
+    - rect: A pygame.Rect object representing the position and size of the button.
+    - text: A string representing the text displayed on the button.
+    - text_color: A tuple representing the RGB color value of the button text.
+    - active: A boolean indicating whether the button is currently active.
+    - color_active: A tuple representing the RGB color value of the button when active.
+    - color_inactive: A tuple representing the RGB color value of the button when inactive.
+    - previous_window: A string representing the name of the previous window.
+
+    Methods:
+    - handle_event(event): Handles the pygame event and returns the name of the previous window if the button is clicked.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(268, 35, 102, 50)
         self.text = "Back"
@@ -374,6 +502,22 @@ box_back = BoxBack()
 
 
 class BoxDelete(InteractiveBox):
+    """
+    Represents a box for deleting a chess board.
+
+    Attributes:
+        rect (pygame.Rect): The rectangular area of the box.
+        text (str): The text displayed on the box.
+        text_color (tuple): The color of the text.
+        active (bool): Indicates if the box is active.
+        color_active (tuple): The color of the box when active.
+        color_inactive (tuple): The color of the box when inactive.
+        previous_window (str): The name of the previous window.
+
+    Methods:
+        handle_event(event): Handles the event triggered by the user.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(21, 35, 132, 50)
         self.text = "Delete"
@@ -398,6 +542,18 @@ box_delete = BoxDelete()
 
 
 class BoxCurrentlySelected(InteractiveBox):
+    """
+    Represents a box that displays the currently selected item.
+
+    Attributes:
+        rect (pygame.Rect): The rectangular area of the box.
+        text (str): The text to be displayed in the box.
+        text_color (tuple): The color of the text.
+        active (bool): Indicates whether the box is active or not.
+        color_active (tuple): The color of the box when active.
+        color_inactive (tuple): The color of the box when inactive.
+    """
+
     def __init__(self):
         self.rect = pygame.Rect(352, 96, 300, 18)
         self.text = "Current Selected: "
@@ -407,6 +563,12 @@ class BoxCurrentlySelected(InteractiveBox):
         self.color_inactive = BOX_COLOR
 
     def draw(self, screen):
+        """
+        Draws the box on the screen.
+
+        Args:
+            screen (pygame.Surface): The surface to draw on.
+        """
         pygame.draw.rect(screen, self.color_inactive, self.rect)
         pygame.draw.rect(screen, (0, 0, 0), self.rect, 1)
         font = pygame.font.Font(None, 18)
@@ -415,6 +577,12 @@ class BoxCurrentlySelected(InteractiveBox):
         screen.blit(text_draw, (self.rect.left + 5, self.rect.top + 5))
 
     def update(self, screen):
+        """
+        Updates the box on the screen.
+
+        Args:
+            screen (pygame.Surface): The surface to update on.
+        """
         self.draw(screen)
 
 
@@ -427,6 +595,13 @@ class BoardCreateScreen:
         rows: int = BOARD_ROWS,
         cols: int = BOARD_COLS,
     ):
+        """
+        Initializes the BoardCreateScreen object.
+
+        Args:
+            rows (int): The number of rows on the board. Defaults to BOARD_ROWS.
+            cols (int): The number of columns on the board. Defaults to BOARD_COLS.
+        """
         self.rows = rows
         self.cols = cols
         self.piece_alignment = np.zeros((BOARD_ROWS, BOARD_COLS))

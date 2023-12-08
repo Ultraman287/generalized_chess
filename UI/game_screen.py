@@ -14,6 +14,12 @@ from Logic.game import GameLogic
 
 BOX_COLOR = (217, 217, 217)
 
+"""
+The actual game instance is implemented pretty similarly to the way the frontend for the board creation screen is implemented. The main difference is the type of logic
+and UI updates that need to happen when interacting with the screen.
+
+"""
+
 
 class BoxBack(InteractiveBox):
     def __init__(self):

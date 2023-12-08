@@ -17,6 +17,15 @@ class GamePiece:
         name: str,
         phased_movement: bool = False,
     ):
+        """
+        Initializes a Piece object.
+
+        Args:
+            piece (pygame.Surface): The image representing the piece.
+            movement (np.ndarray): The possible movement directions of the piece.
+            name (str): The name of the piece.
+            phased_movement (bool, optional): Indicates if the piece has phased movement. Defaults to False.
+        """
         self.piece = piece
         self.movement = movement
         self.name = name

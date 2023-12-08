@@ -106,6 +106,25 @@ class IndividualPiece(InteractiveBox):
 
 
 class SelectPiece(InteractiveBox):
+    """
+    Similar to the SelectBoard class, but for pieces.
+
+    Attributes:
+    - pieces (list): A list of pieces.
+    - piece_names (list): A list of names corresponding to the pieces.
+    - rect (pygame.Rect): The rectangular area where the pieces are displayed.
+    - num_pieces (int): The number of pieces.
+    - col_row_ratio (float): The ratio of the width to height of the rectangular area.
+    - num_cols (int): The number of columns in which the pieces are arranged.
+    - num_rows (int): The number of rows in which the pieces are arranged.
+    - self.pieces (list): A list of IndividualPiece objects representing each piece.
+
+    Methods:
+    - draw(screen): Draws the SelectPiece object on the screen.
+    - handle_event(event): Handles the given event and returns the appropriate action.
+    - update(screen): Updates the SelectPiece object on the screen.
+    """
+
     def __init__(self, pieces=[], piece_names=[]):
         self.rect = pygame.Rect(56, 124, 688, 420)
 

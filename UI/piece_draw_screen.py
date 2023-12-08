@@ -293,6 +293,26 @@ box_delete = BoxDelete()
 
 
 class MakePiece:
+    """
+    Represents a class for creating and manipulating chess pieces.
+
+    Attributes:
+        rows (int): The number of rows on the chessboard.
+        cols (int): The number of columns on the chessboard.
+        movement (np.ndarray): The movement matrix of the piece.
+        drawing (np.ndarray): The drawing matrix of the piece.
+        type_movement (np.ndarray): The type movement matrix of the piece.
+        current_mode (str): The current mode of the piece.
+        box_name: The box for entering the name of the piece.
+        box_draw_and_move: The box for selecting the draw or move mode.
+        box_back: The box for going back to the previous window.
+        box_save: The box for saving the piece.
+        box_input: The box for inputting the drawing matrix.
+        box_input_2: The box for inputting the movement matrix.
+        box_delete: The box for deleting the piece.
+        box_phase: The box for selecting the phase of the piece.
+    """
+
     def __init__(
         self,
         rows: int = 8,
@@ -363,6 +383,15 @@ class MakePiece:
         self.box_phase.update(screen)
 
     def reset(self, name: str = None):
+        """
+        Resets the make piece window.
+
+        Args:
+            name (str): The name of the piece. If provided, loads the piece with the given name.
+
+        Returns:
+            None
+        """
         if name is not None:
             self.box_name.text = name
             self.box_name.active = False

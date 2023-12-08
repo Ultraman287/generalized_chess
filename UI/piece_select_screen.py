@@ -5,6 +5,10 @@ import os
 
 from Helpers.interactive_box import InteractiveBox
 
+"""
+Simple menu selection UI
+"""
+
 
 class CreateNewPiece(InteractiveBox):
     def __init__(self):

@@ -5,6 +5,11 @@ import os
 from Helpers.interactive_box import InteractiveBox
 
 
+"""
+This is a simple menu selection UI
+"""
+
+
 class NewGame(InteractiveBox):
     def __init__(self):
         self.rect = pygame.Rect(207, 132, 386, 58)
