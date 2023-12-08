@@ -73,3 +73,18 @@ Making a board
 To play the game
 
 <img src='./tutorials/Tutorial_play_game.gif'>
+
+
+# Showcasing the Reinforcement learning implementation through open_spiel on a minimized version of chess (4x4 board)
+
+## Showing a random game using the open_spiel implementation and api
+
+<img src='./tutorials/Random game.gif'>
+
+## Showing a game using the open_spiel implementation and api with a trained model
+
+<img src='./tutorials/Human play against AZ.gif'>
+
+# Showcasing the Reinforcement learning implementation through open_spiel on a minimized version of chess (4x4 board)
+
+<img src='./tutorials/Training AZ agent instance.gif'>
