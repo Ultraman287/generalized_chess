@@ -6,10 +6,6 @@ Create a virtual environment with python
 python -m venv venv
 ```
 
-Install the required libraries
-```Bash
-pip install -r requiremments.txt
-```
 Before running the application, you must add the relevant environment variables to the directory. In this case, this would be creating a '.env' file in the root of the directory and adding the following variables:
 
 ```
@@ -17,9 +13,18 @@ OPENAI_API_KEY=<your openai api key>
 ```
 
 After adding the environment variables, you can activate the virtual environment
+
+
 ```Bash
 source venv/bin/activate
 ```
+
+
+Install the required libraries
+```Bash
+pip install -r requiremments.txt
+```
+
 
 Running the application
 ```Bash
