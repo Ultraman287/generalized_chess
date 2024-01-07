@@ -22,7 +22,7 @@ source venv/bin/activate
 
 Install the required libraries
 ```Bash
-pip install -r requiremments.txt
+pip install -r requirements.txt
 ```
 
 
