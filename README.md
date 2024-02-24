@@ -93,3 +93,16 @@ To play the game
 # Showcasing the Reinforcement learning implementation through open_spiel on a minimized version of chess (4x4 board)
 
 <img src='./tutorials/Training AZ agent instance.gif'>
+
+
+## Installing open_spiel
+
+https://github.com/google-deepmind/open_spiel/blob/master/docs/windows.md
+https://github.com/google-deepmind/open_spiel/blob/master/docs/install.md
+
+For windows, after installing, export the path to the built open_spiel folder for pythonpath
+
+```Bash
+export PYTHONPATH=$PYTHONPATH:/path/to/open_spiel
+export PYTHONPATH=$PYTHONPATH:/path/to/open_spiel/build/python
+```

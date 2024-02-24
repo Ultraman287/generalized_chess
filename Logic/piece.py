@@ -37,6 +37,7 @@ class GamePiece:
         self.color = None
         self.is_king = False
         self.phased_movement = phased_movement
+        self.id = None
 
     def get_valid_moves(self, board, position, alignment):
         """Returns a list of valid moves for the piece"""
@@ -47,9 +48,13 @@ class GamePiece:
         ]
         valid_moves = []
 
+        rows, cols = board.shape
+
         if self.phased_movement:
             for row in range(movement_map.shape[0]):
                 for col in range(movement_map.shape[1]):
+                    if row < 0 or row > rows - 1 or col < 0 or col > cols - 1:
+                        break  # Out of bounds
                     if movement_map[row, col] == 15:
                         if board[row, col] == 0:
                             valid_moves.append((row, col))
@@ -60,8 +65,6 @@ class GamePiece:
             # This means that the pieces movement needs to be contiguous
             # If movement isn't phased, then a breadth first search can be used to find all valid moves
             # A better way to do this would be to just use rays in the directions the piece can move
-
-            rows, cols = board.shape
 
             directions = [
                 (1, 0),

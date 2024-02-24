@@ -26,7 +26,7 @@ from UI.game_existing_screen import GameExistingScreen
 from UI.ai_tools_screen import AIToolsScreen
 from UI.ai_train_screen import AITrainScreen
 from UI.ai_play_screen import AIPlayScreen
-
+from UI.ai_select_screen import AISelectScreen
 
 global CURRENT_WINDOW
 WIDTH, HEIGHT = 800, 600
@@ -61,6 +61,7 @@ windows = {
     "ai_tools_screen": AIToolsScreen(),
     "ai_train_screen": AITrainScreen(),
     "ai_play_screen": AIPlayScreen(),
+    "ai_select_screen": AISelectScreen(),
 }
 
 while running:

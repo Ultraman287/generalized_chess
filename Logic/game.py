@@ -19,6 +19,7 @@ llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
 
 class GameLogic:
     def __init__(self, rows=8, cols=8):
+        self.rows, self.cols = rows, cols
         self.piece_alignment = np.zeros((rows, cols))
         self.piece_position = np.zeros((rows, cols))
         self.initial_piece_position = np.zeros((rows, cols))
@@ -146,6 +147,52 @@ class GameLogic:
                 moves.extend(piece_valid_moves)
         return moves
 
+    def get_all_possible_moves_action_space(self):
+        """Returns all possible moves for the current player"""
+        moves = []
+        for piece in self.pieces.values():
+            if piece.color == self.turn:
+                valid_moves = piece.get_valid_moves(
+                    self.piece_position, piece.position, self.piece_alignment
+                )
+
+                move_ids = [
+                    piece.id * (self.rows * self.cols) + move[0] * self.rows + move[1]
+                    for move in valid_moves
+                ]
+                moves.extend(move_ids)
+        moves.sort()
+        return moves
+
+    def apply_action(self, action):
+        """Applies the action to the board"""
+        piece_id = action // (self.rows * self.cols)
+        action = action % (self.rows * self.cols)
+        row = action // self.rows
+        col = action % self.cols
+        piece = None
+        for p in self.pieces.values():
+            if p.id == piece_id:
+                piece = p
+                break
+        if piece is not None:
+            self.handle_press(piece.position[0], piece.position[1])
+            self.handle_press(row, col)
+
+    def action_to_string(self, action):
+        """Converts the action to a string"""
+        piece_id = action // (self.rows * self.cols)
+        action = action % (self.rows * self.cols)
+        row = action // self.rows
+        col = action % self.cols
+
+        for p in self.pieces.values():
+            if p.id == piece_id:
+                piece = p
+                break
+
+        return f"{'w' if piece.color == WHITE_PIECE else 'b'}{piece.hash}={piece.position}->{(row, col)}"
+
     def get_pieces_from_hash(self, piece_dictionary):
         """Gets the pieces from the hashes stored in the pickle file"""
         self.pieces = {}
@@ -167,8 +214,17 @@ class GameLogic:
                     self.pieces[(r, c)].movement = np.rot90(
                         self.pieces[(r, c)].movement, 2
                     )
+                self.pieces[(r, c)].id = i
 
         # Turning the king pieces into kings
 
         for king_position in self.kings:
             self.pieces[tuple(king_position)].is_king = True
+
+    def get_current_game_state(self):
+        """Returns the current game state"""
+        return self.piece_position, self.piece_alignment
+
+    def board_to_string(self):
+        """Returns the board as a string"""
+        return f"{self.piece_position}\n{self.piece_alignment}"

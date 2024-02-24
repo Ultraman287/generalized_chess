@@ -18,7 +18,7 @@ class TrainAgent(InteractiveBox):
         """Handles events for the interactive box"""
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
-                return "ai_train_screen"
+                return "ai_select_screen"
 
 
 class PlayAgent(InteractiveBox):
