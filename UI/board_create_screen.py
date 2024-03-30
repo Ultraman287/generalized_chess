@@ -152,6 +152,7 @@ class BoxRows(InteractiveBox):
         self.active = False
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
+        self.rows = BOARD_ROWS
 
     def handle_event(self, event):
         """Handles events for the interactive box"""
@@ -164,6 +165,7 @@ class BoxRows(InteractiveBox):
                 if event.key == pygame.K_RETURN:
                     self.active = False
                     if self.text.isdigit():
+                        self.rows = int(self.text)
                         globals()["BOARD_ROWS"] = int(self.text)
                     # BOARD_ROWS = int(self.text)
 
@@ -371,6 +373,15 @@ class BoxSelect(InteractiveBox):
             self.piece_dictionary[cur_piece.name] = cur_piece
 
         # updating the pieces surface when the pieces are updated
+        self.pieces_surface = pygame.Surface((165, PIECE_HEIGHT * len(self.pieces)))
+        for i, piece in enumerate(self.pieces):
+            self.pieces_surface.blit(
+                piece.get_blit(),
+                (self.rect.width / 2 - piece.piece.get_width() / 2, i * PIECE_HEIGHT),
+            )
+
+    def update_pieces_surface(self):
+        """Updates the pieces surface"""
         self.pieces_surface = pygame.Surface((165, PIECE_HEIGHT * len(self.pieces)))
         for i, piece in enumerate(self.pieces):
             self.pieces_surface.blit(

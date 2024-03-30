@@ -106,3 +106,10 @@ For windows, after installing, export the path to the built open_spiel folder fo
 export PYTHONPATH=$PYTHONPATH:/path/to/open_spiel
 export PYTHONPATH=$PYTHONPATH:/path/to/open_spiel/build/python
 ```
+
+
+To run all the tests, run the following command
+
+```Bash
+pytest Tests/*
+```
