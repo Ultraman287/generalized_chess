@@ -79,9 +79,6 @@ class BoxName(InteractiveBox):
                     self.text += event.unicode
 
 
-box_name = BoxName()
-
-
 class BoxCols(InteractiveBox):
     """
     Represents a box for entering the number of columns on the chess board.
@@ -128,9 +125,6 @@ class BoxCols(InteractiveBox):
 
     def update(self, screen, font_size=18):
         return super().update(screen, font_size)
-
-
-box_cols = BoxCols()
 
 
 class BoxRows(InteractiveBox):
@@ -185,9 +179,6 @@ class BoxRows(InteractiveBox):
 
     def update(self, screen, font_size=18):
         return super().update(screen, font_size)
-
-
-box_rows = BoxRows()
 
 
 class BoxInput(InteractiveBox):
@@ -325,9 +316,6 @@ class BoxInput(InteractiveBox):
                 ].copy()
 
 
-box_input = BoxInput()
-
-
 class BoxSelect(InteractiveBox):
     """
     A class representing a box for selecting pieces in a chess game.
@@ -419,9 +407,6 @@ class BoxSelect(InteractiveBox):
         screen.blit(self.pieces_surface, self.rect, (0, self.y_offset, 165, 460))
 
 
-box_select = BoxSelect()
-
-
 class BoxSave(InteractiveBox):
     """
     A class representing a save button box.
@@ -463,9 +448,6 @@ class BoxSave(InteractiveBox):
             self.active = False
 
 
-box_save = BoxSave()
-
-
 class BoxBack(InteractiveBox):
     """
     Represents a back button on the board create screen.
@@ -496,9 +478,6 @@ class BoxBack(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 return self.previous_window
-
-
-box_back = BoxBack()
 
 
 class BoxDelete(InteractiveBox):
@@ -536,9 +515,6 @@ class BoxDelete(InteractiveBox):
                     os.remove(
                         os.path.join(os.getcwd(), "Boards", box_name.text + ".npz")
                     )
-
-
-box_delete = BoxDelete()
 
 
 class BoxCurrentlySelected(InteractiveBox):
@@ -586,9 +562,6 @@ class BoxCurrentlySelected(InteractiveBox):
         self.draw(screen)
 
 
-box_currently_selected = BoxCurrentlySelected()
-
-
 class BoardCreateScreen:
     def __init__(
         self,
@@ -607,16 +580,16 @@ class BoardCreateScreen:
         self.piece_alignment = np.zeros((BOARD_ROWS, BOARD_COLS))
         self.piece_position_mesh = np.zeros((BOARD_ROWS, BOARD_COLS))
         self.current_mode: str = "draw"
-        self.box_name = box_name
+        self.box_name = BoxName()
         self.selected_piece = None
-        self.box_back = box_back
-        self.box_save = box_save
-        self.box_input = box_input
-        self.box_delete = box_delete
-        self.box_select = box_select
-        self.box_currently_selected = box_currently_selected
-        self.box_rows = box_rows
-        self.box_cols = box_cols
+        self.box_back = BoxBack()
+        self.box_save = BoxSave()
+        self.box_input = BoxInput()
+        self.box_delete = BoxDelete()
+        self.box_select = BoxSelect()
+        self.box_currently_selected = BoxCurrentlySelected()
+        self.box_rows = BoxRows()
+        self.box_cols = BoxCols()
         self.old_row_col = (BOARD_ROWS, BOARD_COLS)
 
     def draw(self, screen):

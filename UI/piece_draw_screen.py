@@ -42,9 +42,6 @@ class BoxName(InteractiveBox):
                     self.text += event.unicode
 
 
-box_name = BoxName()
-
-
 class BoxPhase(InteractiveBox):
     def __init__(self):
         self.rect = pygame.Rect(670, 43, 100, 50)
@@ -79,9 +76,6 @@ class BoxPhase(InteractiveBox):
         font = pygame.font.Font(None, 16)
         text2 = font.render(self.text2, 1, self.text_color)
         screen.blit(text2, (self.rect.left + 5, self.rect.top + 5 + 16))
-
-
-box_phase = BoxPhase()
 
 
 class BoxDrawandMove(InteractiveBox):
@@ -143,9 +137,6 @@ class BoxDrawandMove(InteractiveBox):
 
         text_move = font.render(self.text_move, 1, self.text_color)
         screen.blit(text_move, (self.rect_move.left + 5, self.rect_move.top + 5))
-
-
-box_draw_and_move = BoxDrawandMove()
 
 
 class BoxInput(InteractiveBox):
@@ -213,14 +204,6 @@ class BoxInput(InteractiveBox):
                                 self.current_mesh[col, row] = BLACK
 
 
-box_input = BoxInput()
-
-movement_matrix = (np.indices((15, 15)).sum(axis=0) % 2) * 255
-movement_matrix[7, 7] = 60
-
-box_input_2 = BoxInput(movement_matrix.copy())  # This is the default movement matrix
-
-
 class BoxSave(InteractiveBox):
     def __init__(self):
         self.rect = pygame.Rect(73, 470, 186, 65)
@@ -240,9 +223,6 @@ class BoxSave(InteractiveBox):
             self.active = False
 
 
-box_save = BoxSave()
-
-
 class BoxBack(InteractiveBox):
     def __init__(self):
         self.rect = pygame.Rect(73, 375, 186, 65)
@@ -257,9 +237,6 @@ class BoxBack(InteractiveBox):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 return self.previous_window
-
-
-box_back = BoxBack()
 
 
 class BoxDelete(InteractiveBox):
@@ -287,9 +264,6 @@ class BoxDelete(InteractiveBox):
                             int(hashlib.sha1(box_name.text.encode()).hexdigest(), 16)
                             % TOTAL_EXPECTED_PIECES
                         ] = None
-
-
-box_delete = BoxDelete()
 
 
 class MakePiece:
@@ -326,14 +300,18 @@ class MakePiece:
         self.drawing = drawing
         self.type_movement = np.array([0])
         self.current_mode: str = "draw"
-        self.box_name = box_name
-        self.box_draw_and_move = box_draw_and_move
-        self.box_back = box_back
-        self.box_save = box_save
-        self.box_input = box_input
-        self.box_input_2 = box_input_2
-        self.box_delete = box_delete
-        self.box_phase = box_phase
+        self.box_name = BoxName()
+        self.box_draw_and_move = BoxDrawandMove()
+        self.box_back = BoxBack()
+        self.box_save = BoxSave()
+        self.box_input = BoxInput()
+        movement_matrix = (np.indices((15, 15)).sum(axis=0) % 2) * 255
+        movement_matrix[7, 7] = 60
+        self.box_input_2 = BoxInput(
+            movement_matrix.copy()
+        )  # This is the default movement matrix
+        self.box_delete = BoxDelete()
+        self.box_phase = BoxPhase()
 
     def draw(self, screen):
         """Draws the make piece window"""
