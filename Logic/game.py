@@ -83,10 +83,11 @@ class GameLogic:
         If it can, then it moves the piece to the selected position"""
 
         mesh_size = self.piece_position.shape[0]
+        # print("current game:" + str(self.game_history))
         if 0 <= row < mesh_size and 0 <= col < mesh_size:
-            print(f"piece: {self.pieces.get((row, col), None)}")
+            # print(f"piece: {self.pieces.get((row, col), None)}")
             if self.selected_piece is not None:
-                print(f"Currently the piece is at {self.selected_piece.position}")
+                # print(f"Currently the piece is at {self.selected_piece.position}")
                 if (row, col) in self.piece_can_move_to:
                     self.game_history.append(
                         f'{"w" if self.turn == WHITE_PIECE else "b"}{self.selected_piece.hash}={self.selected_piece.position}->{row, col}'
@@ -107,12 +108,13 @@ class GameLogic:
                                 else "Black"
                             )
                             self.game_history.append(f"\n{self.winner} wins\n")
+                            print(f"{self.winner} wins")
                     self.piece_position[self.selected_piece.position] = 0
                     self.piece_position[row, col] = self.selected_piece.hash
                     self.piece_alignment[self.selected_piece.position] = 0
                     self.piece_alignment[row, col] = self.selected_piece.color
                     self.selected_piece.position = (row, col)
-                    print(self.selected_piece.position)
+                    # print(self.selected_piece.position)
                     self.piece_can_move_to = []
                     self.pieces[(row, col)] = self.selected_piece
                     self.selected_piece = None
@@ -122,7 +124,7 @@ class GameLogic:
                     self.piece_can_move_to = []
             else:
                 self.selected_piece = self.pieces.get((row, col), None)
-                print(f"selected piece: {self.selected_piece}")
+                # print(f"selected piece: {self.selected_piece}")
                 if self.selected_piece:
                     if self.selected_piece.color != self.turn:
                         self.selected_piece = None
@@ -130,7 +132,7 @@ class GameLogic:
                     self.piece_can_move_to = self.selected_piece.get_valid_moves(
                         self.piece_position, (row, col), self.piece_alignment
                     )
-                    print(f"piece can move to: {self.piece_can_move_to}")
+                    # print(f"piece can move to: {self.piece_can_move_to}")
 
     def get_all_possible_moves(self):
         """Returns all possible moves for the current player"""
@@ -162,6 +164,8 @@ class GameLogic:
                 ]
                 moves.extend(move_ids)
         moves.sort()
+
+        print(moves)
         return moves
 
     def apply_action(self, action):
@@ -228,3 +232,25 @@ class GameLogic:
     def board_to_string(self):
         """Returns the board as a string"""
         return f"{self.piece_position}\n{self.piece_alignment}"
+
+    def clone(self):
+        """Clones the current game state"""
+        clone = GameLogic(rows=self.rows, cols=self.cols)
+        clone.piece_position = self.piece_position.copy()
+        clone.piece_alignment = self.piece_alignment.copy()
+        clone.pieces = {k: v.copy() for k, v in self.pieces.items()}
+        for k, v in clone.pieces.items():
+            v.position = k
+            v.color = clone.piece_alignment[k[0]][k[1]]
+            if v.color == BLACK_PIECE:
+                v.movement = np.rot90(v.movement, 2)
+            v.id = self.pieces[k].id
+            v.is_king = self.pieces[k].is_king
+        clone.selected_piece = self.selected_piece
+        clone.piece_can_move_to = self.piece_can_move_to.copy()
+        clone.turn = WHITE_PIECE if self.turn == WHITE_PIECE else BLACK_PIECE
+        clone.game_history = self.game_history.copy()
+        clone.game_over = True if self.game_over else False
+        clone.winner = "White" if self.winner == "White" else "Black"
+        clone.name = self.name
+        return clone

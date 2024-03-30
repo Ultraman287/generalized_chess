@@ -1,0 +1,18 @@
+[2024-03-07 14:06:30.403] learner started
+[2024-03-07 14:06:30.403] Initializing model
+[2024-03-07 14:06:31.266] Model type: mlp(16, 5)
+[2024-03-07 14:06:31.267] Model size: 1993 variables
+[2024-03-07 14:06:31.407] Initial checkpoint: ./Checkpoints/small_chess_az/checkpoint-0
+[2024-03-07 14:06:31.412] 
+===================== Exception caught =====================
+Traceback (most recent call last):
+  File "/home/ultraman287/2024/generalized_chess/./open_spiel/python/algorithms/alpha_zero/alpha_zero.py", line 174, in _watcher
+    return fn(config=config, logger=logger, **kwargs)
+  File "/home/ultraman287/2024/generalized_chess/./open_spiel/python/algorithms/alpha_zero/alpha_zero.py", line 464, in learner
+    num_trajectories, num_states = collect_trajectories()
+  File "/home/ultraman287/2024/generalized_chess/./open_spiel/python/algorithms/alpha_zero/alpha_zero.py", line 428, in collect_trajectories
+    n = trajectory.states[index]
+IndexError: list index out of range
+
+============================================================
+[2024-03-07 14:06:31.413] learner exiting

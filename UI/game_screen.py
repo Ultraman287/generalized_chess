@@ -182,7 +182,7 @@ class BoxInput:
 
             for position, piece in self.game.pieces.items():
                 surf = pygame.transform.scale(
-                    piece.piece,
+                    pygame.surfarray.make_surface(piece.piece),
                     (
                         self.rect.width // int(self.cols * 1.2),
                         self.rect.height // int(self.rows * 1.2),
@@ -320,19 +320,19 @@ class GameScreen:
         pieces = os.listdir(os.path.join(os.getcwd(), "Pieces"))
         for i, piece in enumerate(pieces):
             cur_piece = GamePiece(
-                pygame.surfarray.make_surface(
-                    np.load(os.path.join(os.getcwd(), "Pieces", piece))["drawing"]
-                ),
+                np.load(os.path.join(os.getcwd(), "Pieces", piece))["drawing"],
                 np.transpose(
                     np.load(os.path.join(os.getcwd(), "Pieces", piece))["movement"]
                 ),  # HACKY SOLUTION FOR NOW
                 piece[:-4],
-                True
-                if np.load(os.path.join(os.getcwd(), "Pieces", piece))["type_movement"][
-                    0
-                ]
-                == 1
-                else False,
+                (
+                    True
+                    if np.load(os.path.join(os.getcwd(), "Pieces", piece))[
+                        "type_movement"
+                    ][0]
+                    == 1
+                    else False
+                ),
             )
             self.pieces.append(cur_piece)
             self.piece_dictionary[cur_piece.name] = cur_piece

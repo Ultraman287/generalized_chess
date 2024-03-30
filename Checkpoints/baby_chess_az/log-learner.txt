@@ -1,0 +1,6 @@
+[2024-03-07 12:35:51.200] learner started
+[2024-03-07 12:35:51.200] Initializing model
+[2024-03-07 12:35:52.035] Model type: mlp(16, 5)
+[2024-03-07 12:35:52.036] Model size: 2355 variables
+[2024-03-07 12:35:52.100] Initial checkpoint: ./Checkpoints/baby_chess_az/checkpoint-0
+[2024-03-07 12:36:17.962] learner exiting

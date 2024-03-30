@@ -1,0 +1,38 @@
+[2024-03-07 14:06:30.404] evaluator-0 started
+[2024-03-07 14:06:30.404] Initializing model
+[2024-03-07 14:06:31.286] Initializing bots
+[2024-03-07 14:06:31.359] Game 0: Returns: 1 -1; Actions: w706=(1, 1)->(0, 0)
+[2024-03-07 14:06:31.360] AZ: 1, MCTS: -1, AZ avg/1: 1.000
+[2024-03-07 14:06:31.362] Game 1: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.363] AZ: -1, MCTS: 1, AZ avg/2: 0.000
+[2024-03-07 14:06:31.366] Game 2: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.366] AZ: 1, MCTS: -1, AZ avg/3: 0.333
+[2024-03-07 14:06:31.370] Game 3: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.370] AZ: -1, MCTS: 1, AZ avg/4: 0.000
+[2024-03-07 14:06:31.375] Game 4: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.375] AZ: 1, MCTS: -1, AZ avg/5: 0.200
+[2024-03-07 14:06:31.378] Game 5: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.379] AZ: -1, MCTS: 1, AZ avg/6: 0.000
+[2024-03-07 14:06:31.382] Game 6: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.382] AZ: 1, MCTS: -1, AZ avg/7: 0.143
+[2024-03-07 14:06:31.385] Game 7: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.385] AZ: -1, MCTS: 1, AZ avg/8: 0.000
+[2024-03-07 14:06:31.391] Game 8: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.392] AZ: 1, MCTS: -1, AZ avg/9: 0.111
+[2024-03-07 14:06:31.397] Game 9: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.397] AZ: -1, MCTS: 1, AZ avg/10: 0.000
+[2024-03-07 14:06:31.399] Game 10: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.399] AZ: 1, MCTS: -1, AZ avg/11: 0.091
+[2024-03-07 14:06:31.402] Game 11: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.402] AZ: -1, MCTS: 1, AZ avg/12: 0.000
+[2024-03-07 14:06:31.405] Game 12: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.405] AZ: 1, MCTS: -1, AZ avg/13: 0.077
+[2024-03-07 14:06:31.408] Game 13: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.409] AZ: -1, MCTS: 1, AZ avg/14: 0.000
+[2024-03-07 14:06:31.412] Game 14: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.412] AZ: 1, MCTS: -1, AZ avg/15: 0.067
+[2024-03-07 14:06:31.413] Inference cache: CacheInfo(hits=3, misses=3, size=3, max_size=65536)
+[2024-03-07 14:06:31.413] Loading checkpoint ./Checkpoints/small_chess_az/checkpoint-0
+[2024-03-07 14:06:31.492] Game 15: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.492] AZ: -1, MCTS: 1, AZ avg/16: 0.000
+[2024-03-07 14:06:31.498] evaluator-0 exiting

@@ -1,0 +1,3 @@
+[2024-03-07 12:35:51.190] actor-0 started
+[2024-03-07 12:35:51.190] Initializing model
+[2024-03-07 12:35:51.912] Initializing bots

@@ -1,0 +1,8 @@
+[2024-03-07 14:16:38.873] actor-1 started
+[2024-03-07 14:16:38.873] Initializing model
+[2024-03-07 14:16:40.062] Initializing bots
+[2024-03-07 14:16:40.615] Game 0: Returns: -1 1; Actions: w492=(3, 0)->(2, 0) b706=(0, 1)->(0, 2) w492=(2, 0)->(3, 0) b706=(0, 2)->(0, 1) w706=(3, 2)->(3, 1) b492=(0, 0)->(2, 0) w492=(3, 3)->(3, 2) b706=(0, 1)->(1, 1) w706=(3, 1)->(2, 2) b492=(2, 0)->(2, 2)
+[2024-03-07 14:16:40.616] Inference cache: CacheInfo(hits=105, misses=148, size=148, max_size=65536)
+[2024-03-07 14:16:40.617] Loading checkpoint ./Checkpoints/Example_az/checkpoint-0
+[2024-03-07 14:16:40.704] Game 1: Returns: -1 1; Actions: 
+[2024-03-07 14:16:40.708] actor-1 exiting

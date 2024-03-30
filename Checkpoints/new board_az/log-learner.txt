@@ -1,0 +1,6 @@
+[2024-03-07 11:55:33.300] learner started
+[2024-03-07 11:55:33.300] Initializing model
+[2024-03-07 11:55:34.169] Model type: mlp(16, 5)
+[2024-03-07 11:55:34.169] Model size: 7015 variables
+[2024-03-07 11:55:34.227] Initial checkpoint: ./Checkpoints/new board_az/checkpoint-0
+[2024-03-07 11:56:51.723] learner exiting

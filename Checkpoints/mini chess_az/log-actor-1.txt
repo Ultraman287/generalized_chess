@@ -1,0 +1,10 @@
+[2024-03-07 14:08:08.374] actor-1 started
+[2024-03-07 14:08:08.374] Initializing model
+[2024-03-07 14:08:09.516] Initializing bots
+[2024-03-07 14:08:09.939] Game 0: Returns: 1 -1; Actions: w467=(2, 1)->(1, 1) b706=(0, 2)->(1, 1) w706=(3, 2)->(2, 3) b706=(1, 1)->(2, 0) w394=(3, 3)->(2, 1) b706=(2, 0)->(1, 1) w467=(2, 2)->(1, 1)
+[2024-03-07 14:08:09.942] Inference cache: CacheInfo(hits=53, misses=92, size=92, max_size=65536)
+[2024-03-07 14:08:09.942] Loading checkpoint ./Checkpoints/mini chess_az/checkpoint-0
+[2024-03-07 14:08:10.025] Game 1: Returns: 1 -1; Actions: 
+[2024-03-07 14:08:10.027] Game 2: Returns: 1 -1; Actions: 
+[2024-03-07 14:08:10.031] Game 3: Returns: 1 -1; Actions: 
+[2024-03-07 14:08:10.038] actor-1 exiting

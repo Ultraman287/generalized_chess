@@ -1,0 +1,33 @@
+[2024-03-07 14:06:30.396] actor-0 started
+[2024-03-07 14:06:30.396] Initializing model
+[2024-03-07 14:06:31.272] Initializing bots
+[2024-03-07 14:06:31.348] Game 0: Returns: 1 -1; Actions: w706=(1, 1)->(0, 0)
+[2024-03-07 14:06:31.351] Game 1: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.353] Game 2: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.357] Game 3: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.361] Game 4: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.364] Game 5: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.366] Game 6: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.368] Game 7: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.370] Game 8: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.373] Game 9: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.375] Game 10: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.377] Game 11: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.378] Game 12: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.380] Game 13: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.384] Game 14: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.387] Game 15: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.391] Game 16: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.393] Game 17: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.395] Game 18: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.399] Game 19: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.401] Game 20: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.403] Game 21: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.405] Game 22: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.407] Game 23: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.408] Game 24: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.411] Game 25: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.412] Inference cache: CacheInfo(hits=3, misses=4, size=4, max_size=65536)
+[2024-03-07 14:06:31.412] Loading checkpoint ./Checkpoints/small_chess_az/checkpoint-0
+[2024-03-07 14:06:31.495] Game 26: Returns: 1 -1; Actions: 
+[2024-03-07 14:06:31.505] actor-0 exiting

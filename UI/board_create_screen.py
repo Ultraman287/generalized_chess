@@ -292,9 +292,9 @@ class BoxInput(InteractiveBox):
                             else:
                                 self.piece_position_mesh[row][col] = piece.hash
                                 self.piece_alignment_mesh[row][col] = WHITE_PIECE
-                                self.pieces[
-                                    (row, col)
-                                ] = piece  # Storing the piece object for faster access
+                                self.pieces[(row, col)] = (
+                                    piece.copy()
+                                )  # Storing the piece object for faster access
                                 print(f"Piece placed at {row}, {col}")
 
                         elif event.button == 3:

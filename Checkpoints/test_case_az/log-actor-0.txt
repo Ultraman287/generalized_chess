@@ -1,0 +1,57 @@
+[2024-03-07 15:39:41.325] actor-0 started
+[2024-03-07 15:39:41.325] Initializing model
+[2024-03-07 15:39:43.537] Initializing bots
+[2024-03-07 15:39:43.542] Game 0: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.545] Game 1: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.554] Game 2: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.556] Game 3: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.558] Game 4: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.567] Game 5: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.570] Game 6: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.573] Game 7: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.575] Game 8: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.583] Game 9: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.588] Game 10: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.590] Game 11: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.594] Game 12: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.600] Game 13: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.603] Game 14: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.605] Game 15: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.607] Game 16: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.610] Game 17: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.614] Game 18: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.620] Game 19: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.622] Game 20: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.624] Game 21: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.627] Game 22: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.629] Game 23: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.630] Game 24: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.633] Game 25: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.637] Game 26: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.640] Game 27: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.643] Game 28: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.646] Game 29: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.648] Game 30: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.654] Game 31: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.660] Game 32: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.662] Game 33: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.664] Game 34: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.666] Game 35: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.669] Game 36: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.671] Game 37: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.674] Game 38: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.676] Game 39: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.679] Game 40: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.681] Game 41: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.683] Game 42: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.685] Game 43: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.688] Game 44: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.700] Game 45: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.704] Game 46: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.708] Game 47: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.710] Game 48: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.716] Game 49: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.717] Inference cache: CacheInfo(hits=0, misses=0, size=0, max_size=65536)
+[2024-03-07 15:39:43.717] Loading checkpoint ./Checkpoints/test_case_az/checkpoint-0
+[2024-03-07 15:39:43.819] Game 50: Returns: -1 1; Actions: 
+[2024-03-07 15:39:43.827] actor-0 exiting

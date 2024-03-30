@@ -1,0 +1,31 @@
+{
+  "actors": 2,
+  "checkpoint_freq": 1,
+  "eval_levels": 7,
+  "evaluation_window": 25,
+  "evaluators": 1,
+  "game": "mini_chess",
+  "learning_rate": 0.1,
+  "max_simulations": 20,
+  "max_steps": 1,
+  "nn_depth": 5,
+  "nn_model": "mlp",
+  "nn_width": 16,
+  "observation_shape": [
+    7,
+    4,
+    4
+  ],
+  "output_size": 96,
+  "path": "./Checkpoints/Example_az/",
+  "policy_alpha": 1,
+  "policy_epsilon": 0.25,
+  "quiet": true,
+  "replay_buffer_reuse": 3,
+  "replay_buffer_size": 256,
+  "temperature": 1,
+  "temperature_drop": 10,
+  "train_batch_size": 32,
+  "uct_c": 2,
+  "weight_decay": 0.0001
+}

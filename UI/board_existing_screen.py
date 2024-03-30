@@ -52,7 +52,7 @@ class IndividualBoard(InteractiveBox):
         """
         self.rect = pygame.Rect(x, y, w, h)
         self.board = board
-        self.board = pygame.transform.scale(self.board, (w * 0.97, h * 0.8))
+        self.board = pygame.transform.scale(self.board, (h * 0.8, w * 0.97))
         # self.board = pygame.transform.flip(self.board, True, False)
         self.board = pygame.transform.rotate(self.board, 90)
         self.name = name
@@ -61,28 +61,6 @@ class IndividualBoard(InteractiveBox):
         self.color = BOX_COLOR
         self.color_active = (250, 220, 220)
         self.color_inactive = BOX_COLOR
-
-    def get_blit(self):
-        """
-        Returns a surface that combines the name and piece of the board.
-
-        Returns:
-            pygame.Surface: The surface containing the name and piece.
-        """
-        text = pygame.font.SysFont("Arial", self.rect.height // 10).render(
-            self.name, True, (0, 0, 0)
-        )
-        piece = pygame.transform.scale(
-            self.board, (self.rect.width, self.rect.height * 0.8)
-        )
-        piece = pygame.transform.flip(piece, True, False)
-        surface = pygame.Surface((self.rect.width, self.rect.height))
-        surface.fill(self.color)
-        surface.blit(piece, (self.rect.width / 2 - piece.get_width() / 2, 0))
-        surface.blit(
-            text, (self.rect.width / 2 - text.get_width() / 2, self.rect.height * 0.85)
-        )
-        return surface
 
     def draw(self, screen: pygame.Surface):
         """

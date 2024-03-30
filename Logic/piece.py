@@ -12,7 +12,7 @@ from UI.piece_draw_screen import TOTAL_EXPECTED_PIECES, WALK, BLACK, WHITE
 class GamePiece:
     def __init__(
         self,
-        piece: pygame.Surface,
+        piece: np.ndarray,
         movement: np.ndarray,
         name: str,
         phased_movement: bool = False,
